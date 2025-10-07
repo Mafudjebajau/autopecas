@@ -1,0 +1,37 @@
+section{
+    background: rgb(19, 19, 47);
+    color: wite;
+}
+#disponivel{
+    display: flex;
+    justify-content: center;
+    color: white;
+    max-width: 50px;
+    padding: .5rem;
+    border-radius: 5px;
+}
+.text-ligh{
+    color: rgb(211, 213, 214);
+}
+
+.justify-content-space-between{
+    justify-content: space-between !important;
+}
+
+.h5 {
+    color: white !important;
+    font-size: 2.5rem !important;
+}
+@media (min-width:900px) {
+     .hero-img{
+        max-width: 900px ;
+    }
+}
+@media (min-width:400px) {
+    .hero{
+        overflow: hidden;
+    }
+    .hero-img{
+        max-width: 400px ;
+    }
+}
