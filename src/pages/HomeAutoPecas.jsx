@@ -32,10 +32,10 @@ const CAR_PARTS = [
   { id: 2, brand: "Toyota", image: noimg, name: "Pastilha de Freio Cobreq", disponivel: true },
   { id: 3, brand: "Ford", image: noimg, name: "Bateria Moura 60Ah", disponivel: false },
   { id: 4, brand: "BMW", image: noimg, name: "Vela NGK", disponivel: true },
-  { id: 5, brand: "Mercedes", image: noimg, name: "Amortecedor Monroe", disponivel: true },
+  { id: 5, brand: "Mercedes", image: noimg, name: "Amortecedor Monroe", disponivel: false },
   { id: 6, brand: "Bosch", image: noimg, name: "Extintor de Incêndio 1kg", disponivel: true },
   { id: 7, brand: "Philips", image: noimg, name: "Lâmpada Automotiva H7", disponivel: true },
-  { id: 8, brand: "3M", image: noimg, name: "Fita Isolante Automotiva", disponivel: true },
+  { id: 8, brand: "3M", image: noimg, name: "Fita Isolante Automotiva", disponivel: false },
   { id: 9, brand: "Bardahl", image: noimg, name: "Aditivo para Radiador", disponivel: true },
   { id: 10, brand: "Bosch", image: noimg, name: "Macaco Hidráulico", disponivel: true },
   { id: 11, brand: "Philips", image: noimg, name: "Lanterna de Emergência", disponivel: true },
@@ -109,17 +109,7 @@ function Header({ onSearch, carrinho, setShowCart }) {
               </a>
             </li>
             <li className="nav-item position-relative">
-              <button
-                className="btn btn-outline-light ms-3 position-relative"
-                onClick={() => setShowCart(true)}
-              >
-                <FaShoppingCart />
-                {carrinho.length > 0 && (
-                  <span className="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">
-                    {carrinho.length}
-                  </span>
-                )}
-              </button>
+
             </li>
           </ul>
         </div>
@@ -173,21 +163,25 @@ function Hero() {
 function BrandCard({ brand, onClick }) {
   return (
     <div
-      className="card h-100 text-center shadow-sm p-3"
+      className="card h-100 text-center shadow-sm p-3 py-2 brand-card"
       style={{
         borderRadius: "0.75rem",
         cursor: "pointer",
         transition: "all 0.3s",
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
       }}
       onClick={() => onClick(brand.name)}
     >
       <img
         src={brand.logo}
         alt={brand.name}
-        className="mx-auto mb-3"
-        style={{ maxHeight: "150px", maxWidth: "150px", minHeight: "150px", minWidth: "150px", objectFit: "contain" }}
+        className="mx-auto mb-3 brands-icons"
+        style={{}}
       />
-      <h6 className="fw-semibold fs-4">{brand.name}</h6>
+      <h6 className="fw-semibold brand-name">{brand.name}</h6>
     </div>
   );
 }
@@ -212,10 +206,10 @@ function PartCard({ part, onAdd }) {
         </span>
       </div>
       <button
-        className="btn btn-sm btn-primary mt-2 w-100"
+        className="btn btn-sm adicionar-carrinho mt-2 w-100"
         onClick={() => onAdd(part)}
       >
-        Adicionar ao Carrinho
+        {part.disponivel ? "Adicionar ao Carrinho" : "Encomendar"}
       </button>
     </div>
   );
@@ -259,13 +253,23 @@ export default function HomeAutoPecas() {
       <Header onSearch={setQuery} carrinho={carrinho} setShowCart={setShowCart} />
       <main className="pt-5">
         <Hero />
-
+        <button
+          className="btn btn-dark ms-3 shopping-button"
+          onClick={() => setShowCart(true)}
+        >
+          <FaShoppingCart />
+          {carrinho.length > 0 && (
+            <span className="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">
+              {carrinho.length}
+            </span>
+          )}
+        </button>
         {/* Marcas de Carros */}
-        <section id="brand" className="px-3 px-md-5 py-5">
+        <section id="brand" className="px-3 px-md-5 py-3">
           <h3 className="h5 text-light mb-4">Marcas de Carros</h3>
-          <div className="row g-3 g-md-4">
+          <div className="row g-1 g-lg-4 g-md-4 g-sm-1">
             {CAR_BRANDS.map((brand) => (
-              <div key={brand.id} className="col-6 col-sm-4 col-md-3">
+              <div key={brand.id} className=" col-3 col-lg-3 col-sm-6 col-md-6 ">
                 <BrandCard brand={brand} onClick={setSelectedBrand} />
               </div>
             ))}
@@ -273,11 +277,11 @@ export default function HomeAutoPecas() {
         </section>
 
         {/* Marcas de Artigos */}
-        <section className="px-3 px-md-5 py-5">
+        <section className="px-3 px-md-5 py-3">
           <h3 className="h5 text-light mb-4">Marcas de Artigos</h3>
-          <div className="row g-3 g-md-4">
+          <div className="row g-1 g-md-4">
             {ARTICLE_BRANDS.map((brand) => (
-              <div key={brand.id} className="col-6 col-sm-4 col-md-2">
+              <div key={brand.id} className="col-3 col-lg-2 col-sm-6 col-md-6 ">
                 <BrandCard brand={brand} onClick={setSelectedBrand} />
               </div>
             ))}
@@ -299,10 +303,10 @@ export default function HomeAutoPecas() {
               </button>
             )}
           </div>
-          <div className="row g-3 g-md-4">
+          <div className="row g-2 g-md-4">
             {filteredParts.length > 0 ? (
               filteredParts.map((part) => (
-                <div key={part.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div key={part.id} className="col-6 col-lg-2 col-sm-6 col-md-4 col-lg-3">
                   <PartCard part={part} onAdd={adicionarCarrinho} />
                 </div>
               ))
@@ -317,12 +321,14 @@ export default function HomeAutoPecas() {
         {/* Carrinho */}
         {showCart && (
           <div
-            className="position-fixed top-0 end-0 bg-white shadow-lg p-4"
-            style={{ width: "350px", height: "100vh", zIndex: 1050 }}
+            className="position-fixed top-0 end-0 bg-semi-transparent shadow-lg p-4"
+            style={{ width: "350px", height: "100vh", zIndex: 2050, overflow:'hidden' }}
           >
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h4>Carrinho</h4>
               <FaTimes
+              color="red"
+              size={20}
                 style={{ cursor: "pointer" }}
                 onClick={() => setShowCart(false)}
               />

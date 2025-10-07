@@ -1,8 +1,16 @@
-section{
-    background: rgb(19, 19, 47);
+section {
+    background-color: rgb(19, 19, 47);
     color: wite;
 }
-#disponivel{
+
+.adicionar-carrinho {
+    background: rgb(19, 19, 47) !important;
+    border: none;
+    color: rgb(125, 180, 187) !important;
+    font-weight: 700 !important;
+}
+
+#disponivel {
     display: flex;
     justify-content: center;
     color: white;
@@ -10,11 +18,12 @@ section{
     padding: .5rem;
     border-radius: 5px;
 }
-.text-ligh{
+
+.text-ligh {
     color: rgb(211, 213, 214);
 }
 
-.justify-content-space-between{
+.justify-content-space-between {
     justify-content: space-between !important;
 }
 
@@ -22,16 +31,75 @@ section{
     color: white !important;
     font-size: 2.5rem !important;
 }
+
+.brands-icons {
+    max-width: 250px;
+    max-height: 250px;
+    min-width: 100px;
+    min-height: 100px;
+    object-fit: contain;
+    padding: 1rem 0;
+}
+
+.brand-card {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    /* max-height: 200px !important; */
+    min-height: 150px;
+    background: linear-gradient(20deg, rgba(247, 244, 244, 0.567), rgba(243, 241, 241, 0.8), rgba(240, 240, 243, 0.983), rgba(246, 243, 243, 0.987)) !important;
+    border: none !important;
+
+}
+
+.shopping-button {
+    position: fixed;
+    top: 15%;
+    right: 4%;
+    z-index: 1000;
+}
+.bg-semi-transparent{
+    position: fixed;
+    top: 0;
+    background: rgba(3, 1, 28, 0.766);
+    backdrop-filter: blur(100%);
+    filter: blur(100%);
+    z-index: 1000;
+}
+
 @media (min-width:900px) {
-     .hero-img{
-        max-width: 900px ;
+    .hero-img {
+        max-width: 900px;
     }
 }
+
 @media (min-width:400px) {
-    .hero{
+    .hero {
         overflow: hidden;
     }
-    .hero-img{
-        max-width: 400px ;
+
+    .hero-img {
+        max-width: 400px;
+    }
+}
+
+@media (min-width:200px) {
+    .brands-icons {
+        max-width: 50px;
+        max-height: 50px;
+        min-width: 50px;
+        min-height: 100px;
+    }
+
+    .brand-name {
+        font-size: 1rem !important;
+    }
+
+    .h5 {
+        font-size: 1.5rem !important;
+    }
+
+    .brand-card {
+        max-height: 100px;
     }
 }
