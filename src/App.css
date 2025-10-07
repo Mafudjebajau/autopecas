@@ -33,10 +33,10 @@ section {
 }
 
 .brands-icons {
-    max-width: 250px;
-    max-height: 250px;
-    min-width: 100px;
-    min-height: 100px;
+    max-width: 150px;
+    max-height: 150px;
+    min-width: 150px;
+    min-height: 150px;
     object-fit: contain;
     padding: 1rem 0;
 }
@@ -57,14 +57,27 @@ section {
     top: 15%;
     right: 4%;
     z-index: 1000;
+    max-width: 50px;
+    max-height: 50px;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+
+    padding: 1rem !important;
+    border-radius: 50% !important;
 }
-.bg-semi-transparent{
+
+.bg-semi-transparent {
     position: fixed;
     top: 0;
     background: rgba(3, 1, 28, 0.766);
     backdrop-filter: blur(100%);
     filter: blur(100%);
     z-index: 1000;
+}
+
+.brand-img {
+    margin-bottom: 1rem;
 }
 
 @media (min-width:900px) {
@@ -83,12 +96,13 @@ section {
     }
 }
 
-@media (min-width:200px) {
+@media (min-width: 200px) and (max-width: 390px) {
+    
     .brands-icons {
         max-width: 50px;
         max-height: 50px;
         min-width: 50px;
-        min-height: 100px;
+        min-height: 80px;
     }
 
     .brand-name {
@@ -101,5 +115,11 @@ section {
 
     .brand-card {
         max-height: 100px;
+        min-height: 50px;
+        margin-bottom: 0;
+    }
+
+    .brand-img {
+        margin-bottom: 0 ;
     }
 }

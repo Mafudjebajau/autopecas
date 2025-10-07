@@ -163,7 +163,7 @@ function Hero() {
 function BrandCard({ brand, onClick }) {
   return (
     <div
-      className="card h-100 text-center shadow-sm p-3 py-2 brand-card"
+      className="card h-100 text-center shadow-sm p-3 py-0 brand-card"
       style={{
         borderRadius: "0.75rem",
         cursor: "pointer",
@@ -178,7 +178,7 @@ function BrandCard({ brand, onClick }) {
       <img
         src={brand.logo}
         alt={brand.name}
-        className="mx-auto mb-3 brands-icons"
+        className="mx-auto brands-icons brand-img"
         style={{}}
       />
       <h6 className="fw-semibold brand-name">{brand.name}</h6>
