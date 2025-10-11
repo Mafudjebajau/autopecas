@@ -96,10 +96,10 @@ section {
     }
 }
 
-@media (min-width: 200px) and (max-width: 390px) {
+@media (min-width: 200px) and (max-width: 450px) {
     
     .brands-icons {
-        max-width: 50px;
+        max-width: 10px;
         max-height: 50px;
         min-width: 50px;
         min-height: 80px;
