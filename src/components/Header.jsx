@@ -1,0 +1,657 @@
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import logo from "../assets/logo.svg";
+import { 
+  FaTimes, 
+  FaTools, 
+  FaCar, 
+  FaCog, 
+  FaClipboardList,
+  FaSearch,
+  FaHome,
+  FaEnvelope,
+  FaPersonBooth,
+  FaInfoCircle,
+  FaBars,
+  FaList
+} from "react-icons/fa";
+
+const CAR_BRANDS = [
+  { id: 1, name: "Toyota", logo: "https://global.toyota/pages/global_toyota/mobility/toyota-brand/emblem_001.jpg", models: ["Corolla", "Hilux", "Yaris"] },
+  { id: 2, name: "BMW", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg", models: ["X5", "M3", "i8"] },
+  { id: 3, name: "Mercedes", logo: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg", models: ["C-Class", "E-Class", "S-Class"] },
+];
+
+const SERVICES = [
+  { 
+    id: 1, 
+    name: "Manutenção", 
+    icon: <FaTools size={16} />, 
+    subservices: ["Troca de Óleo", "Alinhamento", "Balanceamento", "Revisão Periódica"] 
+  },
+  { 
+    id: 2, 
+    name: "Reparos", 
+    icon: <FaCar size={16} />, 
+    subservices: ["Freios", "Suspensão", "Motor", "Transmissão"] 
+  },
+  { 
+    id: 3, 
+    name: "Peças", 
+    icon: <FaCog size={16} />, 
+    subservices: ["Originais", "Compatíveis", "Performance", "Acessórios"] 
+  },
+  { 
+    id: 4, 
+    name: "Consultoria", 
+    icon: <FaClipboardList size={16} />, 
+    subservices: ["Técnica", "Compra/Venda", "Personalização", "Seguros"] 
+  },
+];
+
+export const Header = () => {
+  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isBrandsDropdownOpen, setIsBrandsDropdownOpen] = useState(false);
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
+  const [activeBrandMobile, setActiveBrandMobile] = useState(null);
+  const [activeServiceMobile, setActiveServiceMobile] = useState(null);
+  const [hoverBrandDesktop, setHoverBrandDesktop] = useState(null);
+  const [hoverServiceDesktop, setHoverServiceDesktop] = useState(null);
+  const [isMobileView, setIsMobileView] = useState(false);
+  const [brandsSubmenuPosition, setBrandsSubmenuPosition] = useState("right");
+  const [servicesSubmenuPosition, setServicesSubmenuPosition] = useState("right");
+  
+  const brandsDropdownRef = useRef(null);
+  const servicesDropdownRef = useRef(null);
+  const brandItemsRef = useRef({});
+  const serviceItemsRef = useRef({});
+
+  // Paleta de colores harmonizada con el gradiente principal
+  const colors = {
+    primary: {
+      gradient: "linear-gradient(90deg, #101b34, #2a3f84)",
+      dark: "#101b34",
+      medium: "#1a2a5e",
+      light: "#2a3f84",
+      accent: "#3a54aa",
+      default:"#ffffffff"
+    },
+    dropdown: {
+      background: "#0f1629",
+      border: "#1a2a5e",
+      hover: "#1a2a5e",
+      text: "#e2e8ff"
+    },
+    submenu: {
+      background: "#151f3c",
+      border: "#2a3f84",
+      hover: "#2a3f84",
+      text: "#ffffff"
+    }
+  };
+
+  // Detectar cambio de tamaño de ventana
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobileView(window.innerWidth < 992);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  // Verificar posición del submenu para marcas
+  const checkBrandSubmenuPosition = (brandId) => {
+    if (isMobileView) return "right";
+    
+    const brandElement = brandItemsRef.current[brandId];
+    if (!brandElement) return "right";
+    
+    const rect = brandElement.getBoundingClientRect();
+    const spaceOnRight = window.innerWidth - rect.right;
+    const submenuWidth = 200;
+    
+    return spaceOnRight >= submenuWidth ? "right" : "left";
+  };
+
+  // Verificar posición del submenu para servicios
+  const checkServiceSubmenuPosition = (serviceId) => {
+    if (isMobileView) return "right";
+    
+    const serviceElement = serviceItemsRef.current[serviceId];
+    if (!serviceElement) return "right";
+    
+    const rect = serviceElement.getBoundingClientRect();
+    const spaceOnRight = window.innerWidth - rect.right;
+    const submenuWidth = 200;
+    
+    return spaceOnRight >= submenuWidth ? "right" : "left";
+  };
+
+  const handleBrandClick = (brandId) => {
+    if (isMobileView) {
+      setActiveBrandMobile(activeBrandMobile === brandId ? null : brandId);
+      setActiveServiceMobile(null);
+    }
+  };
+
+  const handleServiceClick = (serviceId) => {
+    if (isMobileView) {
+      setActiveServiceMobile(activeServiceMobile === serviceId ? null : serviceId);
+      setActiveBrandMobile(null);
+    }
+  };
+
+  const handleBrandHover = (brandId) => {
+    if (!isMobileView) {
+      setHoverBrandDesktop(brandId);
+      setHoverServiceDesktop(null);
+      const position = checkBrandSubmenuPosition(brandId);
+      setBrandsSubmenuPosition(position);
+    }
+  };
+
+  const handleServiceHover = (serviceId) => {
+    if (!isMobileView) {
+      setHoverServiceDesktop(serviceId);
+      setHoverBrandDesktop(null);
+      const position = checkServiceSubmenuPosition(serviceId);
+      setServicesSubmenuPosition(position);
+    }
+  };
+
+
+  const closeAllMenus = () => {
+    setIsMenuOpen(false);
+    setIsBrandsDropdownOpen(false);
+    setIsServicesDropdownOpen(false);
+    setActiveBrandMobile(null);
+    setActiveServiceMobile(null);
+    setHoverBrandDesktop(null);
+    setHoverServiceDesktop(null);
+  };
+
+  const handleNavigation = (path) => {
+    navigate(path);
+    closeAllMenus();
+  };
+
+  const handleModelClick = (model) => {
+    navigate(`/modelo/${model}`);
+    closeAllMenus();
+  };
+
+  const handleServiceSubClick = (service) => {
+    navigate(`/servico/${service}`);
+    closeAllMenus();
+  };
+
+  // Cerrar dropdowns cuando se hace click fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (brandsDropdownRef.current && !brandsDropdownRef.current.contains(event.target)) {
+        setIsBrandsDropdownOpen(false);
+        setHoverBrandDesktop(null);
+      }
+      if (servicesDropdownRef.current && !servicesDropdownRef.current.contains(event.target)) {
+        setIsServicesDropdownOpen(false);
+        setHoverServiceDesktop(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <header 
+      className="navbar navbar-expand-lg navbar-dark fixed-top shadow"
+      style={{ background: colors.primary.gradient }}
+    >
+      <div className="container-fluid w-100 px-3 px-md-5">
+        <a 
+          className="navbar-brand fw-bold d-flex align-items-center gap-2" 
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            handleNavigation("/");
+          }}
+          style={{ color: colors.dropdown.text }}
+        >
+          <img 
+            src={logo} 
+            alt="Logo principal" 
+            style={{ maxWidth: "70px" }} 
+          /> 
+          Trading
+        </a>
+
+        <button 
+          className="navbar-toggler custom-toggler" 
+          type="button" 
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle navigation"
+          style={{ 
+            border: `1px solid ${colors.dropdown.text}`,
+            background: 'transparent',
+            padding: '8px 12px',
+            borderRadius: '6px',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          {!isMenuOpen ? (
+            <div className="d-flex flex-column align-items-center gap-1">
+              <div style={{ 
+                width: '20px', 
+                height: '2px', 
+                background: colors.dropdown.text,
+                transition: 'all 0.3s ease',
+                borderRadius: '2px'
+              }} />
+              <div style={{ 
+                width: '16px', 
+                height: '2px', 
+                background: colors.dropdown.text,
+                transition: 'all 0.3s ease',
+                borderRadius: '2px'
+              }} />
+              <div style={{ 
+                width: '12px', 
+                height: '2px', 
+                background: colors.dropdown.text,
+                transition: 'all 0.3s ease',
+                borderRadius: '2px'
+              }} />
+            </div>
+          ) : (
+            <FaTimes color={colors.dropdown.text} size={20} />
+          )}
+        </button>
+
+        <div className={`collapse navbar-collapse ${isMenuOpen ? "show" : ""}`}>
+         
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-lg-center gap-lg-3">
+            <li className="nav-item">
+              <a 
+                className="nav-link small d-flex align-items-center gap-2"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigation("/");
+                }}
+                style={{ color: colors.dropdown.text }}
+              >
+                <FaHome size={14} />
+                Home
+              </a>
+            </li>
+
+            {/* Dropdown Serviços */}
+            <li 
+              className="nav-item dropdown"
+              ref={servicesDropdownRef}
+              onMouseEnter={() => !isMobileView && setIsServicesDropdownOpen(true)}
+              onMouseLeave={() => !isMobileView && setIsServicesDropdownOpen(false)}
+            >
+              <a
+                className="nav-link dropdown-toggle small d-flex align-items-center gap-2"
+                href="#"
+                onClick={(e) => { 
+                  e.preventDefault(); 
+                  if (isMobileView) {
+                    setIsServicesDropdownOpen(!isServicesDropdownOpen);
+                    setActiveServiceMobile(null);
+                  }
+                }}
+                aria-expanded={isServicesDropdownOpen}
+                style={{ color: colors.dropdown.text }}
+              >
+                <FaTools size={14} />
+                Serviços
+              </a>
+
+              <ul 
+                className={`dropdown-menu ${isServicesDropdownOpen ? "show" : ""}`} 
+                style={{ 
+                  background: colors.dropdown.background,
+                  border: `1px solid ${colors.dropdown.border}`,
+                  borderRadius: "8px",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.3)"
+                }}
+              >
+                {SERVICES.map((service) => (
+                  <li 
+                    key={service.id} 
+                    className="dropdown-submenu position-relative"
+                    ref={el => serviceItemsRef.current[service.id] = el}
+                    onMouseEnter={() => handleServiceHover(service.id)}
+                    onMouseLeave={() => !isMobileView && setHoverServiceDesktop(null)}
+                  >
+                    <a
+                      className="dropdown-item d-flex justify-content-between align-items-center"
+                      href="#"
+                      onClick={(e) => { 
+                        e.preventDefault(); 
+                        if (isMobileView) {
+                          handleServiceClick(service.id);
+                        }
+                      }}
+                      style={{ 
+                        cursor: 'pointer',
+                        padding: '0.75rem 1rem',
+                        borderBottom: `1px solid ${colors.dropdown.border}`,
+                        color: colors.dropdown.text,
+                        background: 'transparent',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => e.target.style.background = colors.dropdown.hover}
+                      onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                    >
+                      <div className="d-flex align-items-center gap-2">
+                        <span style={{ color: colors.primary.accent }}>
+                          {service.icon}
+                        </span>
+                        {service.name}
+                        {isMobileView && (
+                          <span className="ms-2" style={{ color: colors.primary.accent }}>
+                            {activeServiceMobile === service.id ? '▼' : '►'}
+                          </span>
+                        )}
+                      </div>
+                      {!isMobileView && (
+                        <span className="ms-2" style={{ color: colors.primary.accent }}>
+                          ►
+                        </span>
+                      )}
+                    </a>
+
+                    {/* Submenu de subserviços - VERSIÓN DESKTOP */}
+                    {!isMobileView && hoverServiceDesktop === service.id && (
+                      <ul 
+                        className="dropdown-menu show position-absolute"
+                        style={{ 
+                          background: colors.submenu.background,
+                          left: servicesSubmenuPosition === "right" ? "100%" : "auto",
+                          right: servicesSubmenuPosition === "left" ? "100%" : "auto",
+                          top: 0,
+                          minWidth: "200px",
+                          border: `1px solid ${colors.submenu.border}`,
+                          borderRadius: "8px",
+                          boxShadow: "0 8px 24px rgba(0,0,0,0.3)"
+                        }}
+                      >
+                        {service.subservices.map((subservice, idx) => (
+                          <li key={idx}>
+                            <a 
+                              className="dropdown-item"
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleServiceSubClick(subservice);
+                              }}
+                              style={{
+                                padding: '0.75rem 1rem',
+                                borderBottom: `1px solid ${colors.submenu.border}`,
+                                color: colors.submenu.text,
+                                whiteSpace: 'nowrap',
+                                background: 'transparent',
+                                transition: 'all 0.2s ease',
+                                cursor: 'pointer'
+                              }}
+                              onMouseEnter={(e) => e.target.style.background = colors.submenu.hover}
+                              onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                            >
+                              {subservice}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {/* Submenu de subserviços - VERSIÓN MOBILE */}
+                    {isMobileView && activeServiceMobile === service.id && (
+                      <ul 
+                        className="dropdown-menu show position-relative"
+                        style={{ 
+                          background: colors.submenu.background,
+                          margin: "5px 0 5px 15px",
+                          border: `1px solid ${colors.submenu.border}`,
+                          borderRadius: "6px",
+                          boxShadow: "inset 0 2px 8px rgba(0,0,0,0.2)"
+                        }}
+                      >
+                        {service.subservices.map((subservice, idx) => (
+                          <li key={idx}>
+                            <a 
+                              className="dropdown-item" 
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleServiceSubClick(subservice);
+                                closeAllMenus();
+                              }}
+                              style={{
+                                padding: '0.75rem 1rem',
+                                borderBottom: `1px solid ${colors.submenu.border}`,
+                                color: colors.submenu.text,
+                                background: 'transparent',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              {subservice}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </li>
+
+            {/* Dropdown Marcas */}
+            <li 
+              className="nav-item dropdown"
+              ref={brandsDropdownRef}
+              onMouseEnter={() => !isMobileView && setIsBrandsDropdownOpen(true)}
+              onMouseLeave={() => !isMobileView && setIsBrandsDropdownOpen(false)}
+            >
+              <a
+                className="nav-link dropdown-toggle small d-flex align-items-center gap-2"
+                href="#"
+                onClick={(e) => { 
+                  e.preventDefault(); 
+                  if (isMobileView) {
+                    setIsBrandsDropdownOpen(!isBrandsDropdownOpen);
+                    setActiveBrandMobile(null);
+                  }
+                }}
+                aria-expanded={isBrandsDropdownOpen}
+                style={{ color: colors.dropdown.text }}
+              >
+                <FaCar size={14} />
+                Marcas
+              </a>
+
+              <ul 
+                className={`dropdown-menu ${isBrandsDropdownOpen ? "show" : ""}`} 
+                style={{ 
+                  background: colors.dropdown.background,
+                  border: `1px solid ${colors.dropdown.border}`,
+                  borderRadius: "8px",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.3)"
+                }}
+              >
+                {CAR_BRANDS.map((brand) => (
+                  <li 
+                    key={brand.id} 
+                    className="dropdown-submenu position-relative"
+                    ref={el => brandItemsRef.current[brand.id] = el}
+                    onMouseEnter={() => handleBrandHover(brand.id)}
+                    onMouseLeave={() => !isMobileView && setHoverBrandDesktop(null)}
+                  >
+                    <a
+                      className="dropdown-item d-flex justify-content-between align-items-center"
+                      href="#"
+                      onClick={(e) => { 
+                        e.preventDefault(); 
+                        if (isMobileView) {
+                          handleBrandClick(brand.id);
+                        }
+                      }}
+                      style={{ 
+                        cursor: 'pointer',
+                        padding: '0.75rem 1rem',
+                        borderBottom: `1px solid ${colors.dropdown.border}`,
+                        color: colors.dropdown.text,
+                        background: 'transparent',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => e.target.style.background = colors.dropdown.hover}
+                      onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                    >
+                      <div className="d-flex align-items-center gap-2">
+                        <img 
+                          src={brand.logo} 
+                          alt={`Logo ${brand.name}`} 
+                          style={{ 
+                            width: 20, 
+                            height: 20, 
+                            objectFit: "contain",
+                          }} 
+                        />
+                        {brand.name}
+                        {isMobileView && (
+                          <span className="ms-2" style={{ color: colors.primary.accent }}>
+                            {activeBrandMobile === brand.id ? '▼' : '►'}
+                          </span>
+                        )}
+                      </div>
+                      {!isMobileView && (
+                        <span className="ms-2" style={{ color: colors.primary.accent }}>
+                          ►
+                        </span>
+                      )}
+                    </a>
+
+                    {/* Submenu de modelos - VERSIÓN DESKTOP */}
+                    {!isMobileView && hoverBrandDesktop === brand.id && (
+                      <ul 
+                        className="dropdown-menu show position-absolute"
+                        style={{ 
+                          background: colors.submenu.background,
+                          left: brandsSubmenuPosition === "right" ? "100%" : "auto",
+                          right: brandsSubmenuPosition === "left" ? "100%" : "auto",
+                          top: 0,
+                          minWidth: "200px",
+                          border: `1px solid ${colors.submenu.border}`,
+                          borderRadius: "8px",
+                          boxShadow: "0 8px 24px rgba(0,0,0,0.3)"
+                        }}
+                      >
+                        {brand.models.map((model, idx) => (
+                          <li key={idx}>
+                            <a 
+                              className="dropdown-item"
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleModelClick(model);
+                              }}
+                              style={{
+                                padding: '0.75rem 1rem',
+                                borderBottom: `1px solid ${colors.submenu.border}`,
+                                color: colors.submenu.text,
+                                whiteSpace: 'nowrap',
+                                background: 'transparent',
+                                transition: 'all 0.2s ease',
+                                cursor: 'pointer'
+                              }}
+                              onMouseEnter={(e) => e.target.style.background = colors.submenu.hover}
+                              onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                            >
+                              {model}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {/* Submenu de modelos - VERSIÓN MOBILE */}
+                    {isMobileView && activeBrandMobile === brand.id && (
+                      <ul 
+                        className="dropdown-menu show position-relative"
+                        style={{ 
+                          background: colors.submenu.background,
+                          margin: "5px 0 5px 15px",
+                          border: `1px solid ${colors.submenu.border}`,
+                          borderRadius: "6px",
+                          boxShadow: "inset 0 2px 8px rgba(0,0,0,0.2)"
+                        }}
+                      >
+                        {brand.models.map((model, idx) => (
+                          <li key={idx}>
+                            <a 
+                              className="dropdown-item" 
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleModelClick(model);
+                                closeAllMenus();
+                              }}
+                              style={{
+                                padding: '0.75rem 1rem',
+                                borderBottom: `1px solid ${colors.submenu.border}`,
+                                color: colors.submenu.text,
+                                background: 'transparent',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              {model}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </li>
+            <li className="nav-item">
+              <a 
+                className="nav-link small d-flex align-items-center gap-2"
+                href="#sobre"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigation("/sobre");
+                }}
+                style={{ color: colors.dropdown.text }}
+              >
+                <FaInfoCircle size={14} />
+                Sobre
+              </a>
+            </li>
+
+            <li className="nav-item">
+              <a 
+                className="nav-link small d-flex align-items-center gap-2"
+                href="#contact"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigation("/#contact");
+                }}
+                style={{ color: colors.dropdown.text }}
+              >
+                <FaEnvelope size={14} />
+                Contacto
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </header>
+  );
+};

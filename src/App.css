@@ -79,6 +79,20 @@ section {
 .brand-img {
     margin-bottom: 1rem;
 }
+/* style={{ background: "linear-gradient(90deg, #1d3253ff, #1d3557ff, #3a5f9bff)", color: "white" }} */
+.hero{
+    /* display: none !important; */
+    background: linear-gradient(90deg, #1d3253ff, #1d3557ff, #3a5f9bff);
+}
+.hero-banner{
+        background: url('./assets/logo.svg') no-repeat;
+        background-size: contain;
+        background-position: center;
+        color: white;
+}
+.bannery{
+   background: linear-gradient(90deg, rgba(29, 50, 83, 0.777), rgba(29, 53, 87, 0.791), #3a5f9bff);
+}
 
 @media (min-width:900px) {
     .hero-img {

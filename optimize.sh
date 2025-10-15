@@ -32,6 +32,7 @@ find "$ASSETS_DIR" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg
 
   # Ignora imagens que já são redimensionadas
   if [[ "$NAME" =~ -[0-9]+$ ]]; then
+
     continue
   fi
 

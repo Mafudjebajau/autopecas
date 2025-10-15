@@ -60,7 +60,7 @@ const BrandCard = React.memo(({ brand, onClick }) => (
     onKeyDown={(e) => e.key === "Enter" && onClick(brand.name)}
     aria-label={`Filtrar por marca ${brand.name}`}
   >
-    <img src={brand.logo} alt={brand.name} className="mx-auto brand-img" loading="lazy" style={{ maxHeight: 60, objectFit: "contain" }} />
+    <img src={brand.logo} alt={brand.name} className="mx-auto brands-icons" loading="lazy" style={{ maxHeight: 60, objectFit: "contain" }} />
     <h6 className="fw-semibold brand-name">{brand.name}</h6>
   </div>
 ));
