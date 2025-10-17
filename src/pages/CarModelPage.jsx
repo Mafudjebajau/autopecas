@@ -14,7 +14,7 @@ const CAR_BRANDS = [
 // Gerar modelos automaticamente baseado nas marcas
 const generateModelsFromBrands = () => {
   const modelsData = {};
-  
+
   CAR_BRANDS.forEach(brand => {
     const brandKey = brand.name.toLowerCase();
     modelsData[brandKey] = brand.models.map((modelName, index) => {
@@ -42,7 +42,7 @@ const generateModelsFromBrands = () => {
       };
 
       const category = getCategory(modelName);
-      
+
       return {
         id: brand.id * 10 + index + 1, // IDs únicos
         name: modelName,
@@ -51,7 +51,7 @@ const generateModelsFromBrands = () => {
       };
     });
   });
-  
+
   return modelsData;
 };
 
@@ -88,20 +88,33 @@ export default function CarModelPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("name");
   const [loading, setLoading] = useState(true);
+  const [isMobileView, setIsMobileView] = useState(false);
   const navigate = useNavigate()
+
+  // Detectar mudanca de tela
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobileView(window.innerWidth < 992);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   useEffect(() => {
     // Simular carregamento de dados
     setTimeout(() => {
       const modelsData = generateModelsFromBrands();
       const brandData = modelsData[brandName] || [];
-      const info = BRAND_INFO[brandName] || { 
+      const info = BRAND_INFO[brandName] || {
         name: brandName.charAt(0).toUpperCase() + brandName.slice(1),
         description: `Conheça os modelos da marca ${brandName}`,
         founded: 1900,
         country: "Internacional"
       };
-      
+
       setModels(brandData);
       setBrandInfo(info);
       setLoading(false);
@@ -129,8 +142,7 @@ export default function CarModelPage() {
   if (loading) {
     return (
       <>
-        <Header />
-        <div className="min-vh-100 bg-light">
+        <div className="min-vh-100 bg-dark">
           <div className="container py-5">
             <div className="text-center py-5">
               <div className="spinner-border text-primary" role="status">
@@ -167,10 +179,11 @@ export default function CarModelPage() {
   return (
     <>
       <Header />
-      
+
       {/* Hero Section */}
       <section className=" text-white py-5" style={{
-            background: "linear-gradient(45deg, #10192b, #1d3557ff, #3a5f9bff)",}}>
+        background: "linear-gradient(45deg, #10192b, #1d3557ff, #3a5f9bff)",
+      }}>
         <div className="container pt-5">
           <div className="row align-items-center">
             <div className="col-md-8">
@@ -179,8 +192,36 @@ export default function CarModelPage() {
                 Voltar para Marcas
               </Link>
               <h1 className="display-4 fw-bold mb-3 text-primary">{brandInfo.name}</h1>
-              <p className="lead mb-4">{brandInfo.description}</p>
-              <div className="row text-center">
+              {!isMobileView &&
+                <div className="row text-center">
+                  <div className="col-4">
+                    <div className="text-danger fw-bold fs-3">{models.length}</div>
+                    <div className="text-light small">Modelos</div>
+                  </div>
+                  <div className="col-4">
+                    <div className="text-danger fw-bold fs-3">{brandInfo.founded}</div>
+                    <div className="text-light small">Fundação</div>
+                  </div>
+                  <div className="col-4">
+                    <div className="text-danger fw-bold fs-3">{brandInfo.country}</div>
+                    <div className="text-light small">País</div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div className="col-md-4 text-center">
+              {brandInfo.logo && (
+                <img
+                  src={brandInfo.logo}
+                  alt={`Logo ${brandInfo.name}`}
+                  className="img-fluid"
+                  style={{ maxHeight: '150px' }}
+                />
+              )}
+            </div>
+            {isMobileView &&
+              <div className="row text-center pt-4">
                 <div className="col-4">
                   <div className="text-danger fw-bold fs-3">{models.length}</div>
                   <div className="text-light small">Modelos</div>
@@ -194,44 +235,34 @@ export default function CarModelPage() {
                   <div className="text-light small">País</div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-4 text-center">
-              {brandInfo.logo && (
-                <img 
-                  src={brandInfo.logo} 
-                  alt={`Logo ${brandInfo.name}`}
-                  className="img-fluid"
-                  style={{ maxHeight: '150px'}}
-                />
-              )}
-            </div>
+            }
           </div>
         </div>
       </section>
 
       {/* Filtros e Busca */}
       <section className="py-5  h-100 position-relative container-fluid">
-         {/* Background com gradiente dinâmico */}
-      <div className="position-absolute top-0 start-0 w-100 h-100">
-        <div
-          className="w-100 h-100"
-          style={{
-            background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)'
-          }}
-        />
+        {/* Background com gradiente dinâmico */}
+        <div className="position-absolute top-0 start-0 w-100 h-100">
+          <div
+            className="w-100 h-100"
+            style={{
+              background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)'
+            }}
+          />
 
-        {/* Grid animado */}
-        <div
-          className="position-absolute top-0 start-0 w-100 h-100"
-          style={{
-            backgroundImage: `
+          {/* Grid animado */}
+          <div
+            className="position-absolute top-0 start-0 w-100 h-100"
+            style={{
+              backgroundImage: `
               linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
               linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
             `,
-            backgroundSize: '50px 50px'
-          }}
-        />
-      </div>
+              backgroundSize: '50px 50px'
+            }}
+          />
+        </div>
         <div className="container text-light">
           <div className="row g-3 align-items-center">
             <div className="col-lg-6">
@@ -248,11 +279,11 @@ export default function CarModelPage() {
                 />
               </div>
             </div>
-            
+
             <div className="col-lg-6">
               <div className="row g-2">
                 <div className="col-md-8">
-                  <select 
+                  <select
                     className="form-select"
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
@@ -264,7 +295,7 @@ export default function CarModelPage() {
                   </select>
                 </div>
                 <div className="col-md-4">
-                  <select 
+                  <select
                     className="form-select"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
@@ -276,10 +307,10 @@ export default function CarModelPage() {
             </div>
           </div>
         </div>
-     
 
-      {/* Lista de Modelos */}
-      
+
+        {/* Lista de Modelos */}
+
         <div className="container">
           <div className="row">
             <div className="col-12">
@@ -294,7 +325,7 @@ export default function CarModelPage() {
               <FaCar size={64} className="text-secondary mb-3" />
               <h3>Nenhum modelo encontrado</h3>
               <p className="text-secondary">Tente ajustar os filtros ou termos de busca.</p>
-              <button 
+              <button
                 className="btn btn-primary"
                 onClick={() => {
                   setSearchTerm("");
@@ -308,19 +339,19 @@ export default function CarModelPage() {
             <div className="row g-4">
               {filteredModels.map(model => (
                 <div key={model.id} className="col-xl-4 col-lg-6 col-md-6">
-                  <div className="card h-100 "  style={{
+                  <div className="card h-100 " style={{
                     background: '#2f3c4e3e',
                     backdropFilter: 'blur(10px)',
                     boxShadow: '2px 5px 5px #26252f '
                   }}
-                  onClick={(e)=>{
-                //    console.log(model.name)
-                    navigate("/modelo/"+model.name)
-                }}
+                    onClick={(e) => {
+                      //    console.log(model.name)
+                      navigate("/modelo/" + model.name)
+                    }}
                   >
                     <div className="position-relative">
-                      <img 
-                        src={model.image} 
+                      <img
+                        src={model.image}
                         alt={model.name}
                         className="card-img-top"
                         style={{ height: '200px', objectFit: 'cover' }}
@@ -332,7 +363,7 @@ export default function CarModelPage() {
                         <span className="badge bg-danger">{model.category}</span>
                       </div>
                     </div>
-                    
+
                     <div className="card-body d-flex flex-column text-light">
                       <h5 className="card-title">{model.name}</h5>
                       <div className="mt-auto">
@@ -355,7 +386,7 @@ export default function CarModelPage() {
         </div>
       </section>
 
-    <Footer/>
+      <Footer />
       <style jsx>{`
         .card {
           transition: transform 0.2s ease, box-shadow 0.2s ease;

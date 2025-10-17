@@ -99,7 +99,7 @@ export const BrandsSection = React.memo(() => {
   };
 
   return (
-    <section id="marcas" className="py-6 position-relative overflow-hidden">
+    <section id="marcas" className="py-1 position-relative overflow-hidden">
       {/* Background com gradiente dinâmico */}
       <div className="position-absolute top-0 start-0 w-100 h-100">
         <div
@@ -122,19 +122,19 @@ export const BrandsSection = React.memo(() => {
         />
       </div>
 
-      <div className="container-fluid position-relative py-4">
+      <div className="container-fluid position-relative py-2">
         {/* Header */}
-        <div className="text-center mb-6 ">
+        <div className="text-center mb-2 ">
 
-          <div className="icon-header mx-auto  mt-2">
-            <span className="badge bg-primary text-white px-4 py-2 rounded-pill fw-semibold mb-3">
+          <div className="py-3 mx-auto  mt-0">
+            <span className="badge bg-primary text-white px-2 py-2 rounded-pill fw-semibold ">
               Marcas
             </span>
           </div>
           <h2 className="fw-bold display-4 mb-3 text-white">
-            Marcas <span style={{
+            Marcas de <span style={{
               color: 'dodgerblue'
-            }}>Premium</span>
+            }}>Excelência</span>
           </h2>
           <p className="lead text-light mx-auto fs-5" style={{ maxWidth: "500px" }}>
             Pecas exclusivas dos maiores fabricantes mundiais de auto
@@ -236,7 +236,7 @@ export const BrandsSection = React.memo(() => {
           </div>
 
           {/* Indicadores de Progresso */}
-          <div className="slide-indicators text-center mt-4">
+          <div className="slide-indicators text-center mt-0">
             {CAR_BRANDS.map((_, index) => (
               <button
                 key={index}

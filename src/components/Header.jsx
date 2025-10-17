@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.svg";
-import { 
-  FaTimes, 
-  FaTools, 
-  FaCar, 
-  FaCog, 
+import {
+  FaTimes,
+  FaTools,
+  FaCar,
+  FaCog,
   FaClipboardList,
   FaSearch,
   FaHome,
@@ -15,6 +15,7 @@ import {
   FaBars,
   FaList
 } from "react-icons/fa";
+import AnimatedToggler from './AnimatedToggler'
 
 const CAR_BRANDS = [
   { id: 1, name: "Toyota", logo: "https://global.toyota/pages/global_toyota/mobility/toyota-brand/emblem_001.jpg", models: ["Corolla", "Hilux", "Yaris"] },
@@ -23,29 +24,29 @@ const CAR_BRANDS = [
 ];
 
 const SERVICES = [
-  { 
-    id: 1, 
-    name: "Manutenção", 
-    icon: <FaTools size={16} />, 
-    subservices: ["Troca de Óleo", "Alinhamento", "Balanceamento", "Revisão Periódica"] 
+  {
+    id: 1,
+    name: "Manutenção",
+    icon: <FaTools size={16} />,
+    subservices: ["Troca de Óleo", "Alinhamento", "Balanceamento", "Revisão Periódica"]
   },
-  { 
-    id: 2, 
-    name: "Reparos", 
-    icon: <FaCar size={16} />, 
-    subservices: ["Freios", "Suspensão", "Motor", "Transmissão"] 
+  {
+    id: 2,
+    name: "Reparos",
+    icon: <FaCar size={16} />,
+    subservices: ["Freios", "Suspensão", "Motor", "Transmissão"]
   },
-  { 
-    id: 3, 
-    name: "Peças", 
-    icon: <FaCog size={16} />, 
-    subservices: ["Originais", "Compatíveis", "Performance", "Acessórios"] 
+  {
+    id: 3,
+    name: "Peças",
+    icon: <FaCog size={16} />,
+    subservices: ["Originais", "Compatíveis", "Performance", "Acessórios"]
   },
-  { 
-    id: 4, 
-    name: "Consultoria", 
-    icon: <FaClipboardList size={16} />, 
-    subservices: ["Técnica", "Compra/Venda", "Personalização", "Seguros"] 
+  {
+    id: 4,
+    name: "Consultoria",
+    icon: <FaClipboardList size={16} />,
+    subservices: ["Técnica", "Compra/Venda", "Personalização", "Seguros"]
   },
 ];
 
@@ -61,11 +62,13 @@ export const Header = () => {
   const [isMobileView, setIsMobileView] = useState(false);
   const [brandsSubmenuPosition, setBrandsSubmenuPosition] = useState("right");
   const [servicesSubmenuPosition, setServicesSubmenuPosition] = useState("right");
-  
+
   const brandsDropdownRef = useRef(null);
   const servicesDropdownRef = useRef(null);
   const brandItemsRef = useRef({});
   const serviceItemsRef = useRef({});
+  const menuRef = useRef(null);
+  const navbarRef = useRef(null);
 
   // Paleta de colores harmonizada con el gradiente principal
   const colors = {
@@ -75,7 +78,7 @@ export const Header = () => {
       medium: "#1a2a5e",
       light: "#2a3f84",
       accent: "#3a54aa",
-      default:"#ffffffff"
+      default: "#ffffffff"
     },
     dropdown: {
       background: "#0f1629",
@@ -99,35 +102,85 @@ export const Header = () => {
 
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
-    
+
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
+
+  // Fechar menu ao clicar fora ou fazer scroll
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Fechar dropdowns de marcas e serviços
+      if (brandsDropdownRef.current && !brandsDropdownRef.current.contains(event.target)) {
+        setIsBrandsDropdownOpen(false);
+        setHoverBrandDesktop(null);
+      }
+      if (servicesDropdownRef.current && !servicesDropdownRef.current.contains(event.target)) {
+        setIsServicesDropdownOpen(false);
+        setHoverServiceDesktop(null);
+      }
+
+      // Fechar menu mobile ao clicar fora
+      if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target) && 
+          navbarRef.current && !navbarRef.current.contains(event.target)) {
+        closeAllMenus();
+      }
+    };
+
+    const handleScroll = () => {
+      if (isMenuOpen && isMobileView) {
+        closeAllMenus();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('scroll', handleScroll);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('scroll', handleScroll);
+    };
+  }, [isMenuOpen, isMobileView]);
+
+  // Prevenir scroll do body quando menu está aberto no mobile
+  useEffect(() => {
+    if (isMobileView) {
+      if (isMenuOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'unset';
+      }
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen, isMobileView]);
 
   // Verificar posición del submenu para marcas
   const checkBrandSubmenuPosition = (brandId) => {
     if (isMobileView) return "right";
-    
+
     const brandElement = brandItemsRef.current[brandId];
     if (!brandElement) return "right";
-    
+
     const rect = brandElement.getBoundingClientRect();
     const spaceOnRight = window.innerWidth - rect.right;
     const submenuWidth = 200;
-    
+
     return spaceOnRight >= submenuWidth ? "right" : "left";
   };
 
   // Verificar posición del submenu para servicios
   const checkServiceSubmenuPosition = (serviceId) => {
     if (isMobileView) return "right";
-    
+
     const serviceElement = serviceItemsRef.current[serviceId];
     if (!serviceElement) return "right";
-    
+
     const rect = serviceElement.getBoundingClientRect();
     const spaceOnRight = window.innerWidth - rect.right;
     const submenuWidth = 200;
-    
+
     return spaceOnRight >= submenuWidth ? "right" : "left";
   };
 
@@ -163,7 +216,6 @@ export const Header = () => {
     }
   };
 
-
   const closeAllMenus = () => {
     setIsMenuOpen(false);
     setIsBrandsDropdownOpen(false);
@@ -189,31 +241,15 @@ export const Header = () => {
     closeAllMenus();
   };
 
-  // Cerrar dropdowns cuando se hace click fuera
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (brandsDropdownRef.current && !brandsDropdownRef.current.contains(event.target)) {
-        setIsBrandsDropdownOpen(false);
-        setHoverBrandDesktop(null);
-      }
-      if (servicesDropdownRef.current && !servicesDropdownRef.current.contains(event.target)) {
-        setIsServicesDropdownOpen(false);
-        setHoverServiceDesktop(null);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
   return (
-    <header 
+    <header
+      ref={navbarRef}
       className="navbar navbar-expand-lg navbar-dark fixed-top shadow"
       style={{ background: colors.primary.gradient }}
     >
       <div className="container-fluid w-100 px-3 px-md-5">
-        <a 
-          className="navbar-brand fw-bold d-flex align-items-center gap-2" 
+        <a
+          className="navbar-brand fw-bold d-flex align-items-center gap-2"
           href="#"
           onClick={(e) => {
             e.preventDefault();
@@ -221,68 +257,67 @@ export const Header = () => {
           }}
           style={{ color: colors.dropdown.text }}
         >
-          <img 
-            src={logo} 
-            alt="Logo principal" 
-            style={{ maxWidth: "70px" }} 
-          /> 
+          <img
+            src={logo}
+            alt="Logo principal"
+            style={{ maxWidth: "70px" }}
+          />
           Trading
         </a>
 
-        <button 
-          className="navbar-toggler custom-toggler" 
-          type="button" 
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle navigation"
-          style={{ 
-            border: `1px solid ${colors.dropdown.text}`,
-            background: 'transparent',
-            padding: '8px 12px',
-            borderRadius: '6px',
-            transition: 'all 0.3s ease'
-          }}
-        >
-          {!isMenuOpen ? (
-            <div className="d-flex flex-column align-items-center gap-1">
-              <div style={{ 
-                width: '20px', 
-                height: '2px', 
-                background: colors.dropdown.text,
-                transition: 'all 0.3s ease',
-                borderRadius: '2px'
-              }} />
-              <div style={{ 
-                width: '16px', 
-                height: '2px', 
-                background: colors.dropdown.text,
-                transition: 'all 0.3s ease',
-                borderRadius: '2px'
-              }} />
-              <div style={{ 
-                width: '12px', 
-                height: '2px', 
-                background: colors.dropdown.text,
-                transition: 'all 0.3s ease',
-                borderRadius: '2px'
-              }} />
-            </div>
-          ) : (
-            <FaTimes color={colors.dropdown.text} size={20} />
-          )}
-        </button>
+        <AnimatedToggler isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} colors={colors} />
 
-        <div className={`collapse navbar-collapse ${isMenuOpen ? "show" : ""}`}>
-         
+        {/* Overlay para mobile */}
+        {isMenuOpen && isMobileView && (
+          <div 
+            className="menu-overlay"
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 1040,
+              animation: 'fadeIn 0.3s ease-in-out'
+            }}
+            onClick={closeAllMenus}
+          />
+        )}
+
+        <div 
+          ref={menuRef}
+          className={`collapse navbar-collapse navbar-collapse-custom ${isMenuOpen ? "show" : ""}`}
+          style={
+            isMobileView ? {
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '280px',
+              height: '100vh',
+              background: colors.primary.gradient,
+              zIndex: 1050,
+              padding: '80px 20px 20px 20px',
+              transform: isMenuOpen ? 'translateX(0)' : 'translateX(-100%)',
+              transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              overflowY: 'auto',
+              boxShadow: '2px 0 10px rgba(0,0,0,0.3)'
+            } : {}
+          }
+        >
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-lg-center gap-lg-3">
             <li className="nav-item">
-              <a 
+              <a
                 className="nav-link small d-flex align-items-center gap-2"
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
                   handleNavigation("/");
                 }}
-                style={{ color: colors.dropdown.text }}
+                style={{ 
+                  color: colors.dropdown.text,
+                  animation: isMenuOpen && isMobileView ? 'slideInFromLeft 0.4s ease-out 0.1s both' : 'none'
+                }}
               >
                 <FaHome size={14} />
                 Home
@@ -290,17 +325,20 @@ export const Header = () => {
             </li>
 
             {/* Dropdown Serviços */}
-            <li 
+            <li
               className="nav-item dropdown"
               ref={servicesDropdownRef}
               onMouseEnter={() => !isMobileView && setIsServicesDropdownOpen(true)}
               onMouseLeave={() => !isMobileView && setIsServicesDropdownOpen(false)}
+              style={{
+                animation: isMenuOpen && isMobileView ? 'slideInFromLeft 0.4s ease-out 0.2s both' : 'none'
+              }}
             >
               <a
                 className="nav-link dropdown-toggle small d-flex align-items-center gap-2"
                 href="#"
-                onClick={(e) => { 
-                  e.preventDefault(); 
+                onClick={(e) => {
+                  e.preventDefault();
                   if (isMobileView) {
                     setIsServicesDropdownOpen(!isServicesDropdownOpen);
                     setActiveServiceMobile(null);
@@ -313,9 +351,9 @@ export const Header = () => {
                 Serviços
               </a>
 
-              <ul 
-                className={`dropdown-menu ${isServicesDropdownOpen ? "show" : ""}`} 
-                style={{ 
+              <ul
+                className={`dropdown-menu ${isServicesDropdownOpen ? "show" : ""}`}
+                style={{
                   background: colors.dropdown.background,
                   border: `1px solid ${colors.dropdown.border}`,
                   borderRadius: "8px",
@@ -323,8 +361,8 @@ export const Header = () => {
                 }}
               >
                 {SERVICES.map((service) => (
-                  <li 
-                    key={service.id} 
+                  <li
+                    key={service.id}
                     className="dropdown-submenu position-relative"
                     ref={el => serviceItemsRef.current[service.id] = el}
                     onMouseEnter={() => handleServiceHover(service.id)}
@@ -333,13 +371,13 @@ export const Header = () => {
                     <a
                       className="dropdown-item d-flex justify-content-between align-items-center"
                       href="#"
-                      onClick={(e) => { 
-                        e.preventDefault(); 
+                      onClick={(e) => {
+                        e.preventDefault();
                         if (isMobileView) {
                           handleServiceClick(service.id);
                         }
                       }}
-                      style={{ 
+                      style={{
                         cursor: 'pointer',
                         padding: '0.75rem 1rem',
                         borderBottom: `1px solid ${colors.dropdown.border}`,
@@ -370,9 +408,9 @@ export const Header = () => {
 
                     {/* Submenu de subserviços - VERSIÓN DESKTOP */}
                     {!isMobileView && hoverServiceDesktop === service.id && (
-                      <ul 
+                      <ul
                         className="dropdown-menu show position-absolute"
-                        style={{ 
+                        style={{
                           background: colors.submenu.background,
                           left: servicesSubmenuPosition === "right" ? "100%" : "auto",
                           right: servicesSubmenuPosition === "left" ? "100%" : "auto",
@@ -385,7 +423,7 @@ export const Header = () => {
                       >
                         {service.subservices.map((subservice, idx) => (
                           <li key={idx}>
-                            <a 
+                            <a
                               className="dropdown-item"
                               href="#"
                               onClick={(e) => {
@@ -413,20 +451,21 @@ export const Header = () => {
 
                     {/* Submenu de subserviços - VERSIÓN MOBILE */}
                     {isMobileView && activeServiceMobile === service.id && (
-                      <ul 
+                      <ul
                         className="dropdown-menu show position-relative"
-                        style={{ 
+                        style={{
                           background: colors.submenu.background,
                           margin: "5px 0 5px 15px",
                           border: `1px solid ${colors.submenu.border}`,
                           borderRadius: "6px",
-                          boxShadow: "inset 0 2px 8px rgba(0,0,0,0.2)"
+                          boxShadow: "inset 0 2px 8px rgba(0,0,0,0.2)",
+                          animation: 'slideInFromLeft 0.3s ease-out'
                         }}
                       >
                         {service.subservices.map((subservice, idx) => (
                           <li key={idx}>
-                            <a 
-                              className="dropdown-item" 
+                            <a
+                              className="dropdown-item"
                               href="#"
                               onClick={(e) => {
                                 e.preventDefault();
@@ -453,17 +492,20 @@ export const Header = () => {
             </li>
 
             {/* Dropdown Marcas */}
-            <li 
+            <li
               className="nav-item dropdown"
               ref={brandsDropdownRef}
               onMouseEnter={() => !isMobileView && setIsBrandsDropdownOpen(true)}
               onMouseLeave={() => !isMobileView && setIsBrandsDropdownOpen(false)}
+              style={{
+                animation: isMenuOpen && isMobileView ? 'slideInFromLeft 0.4s ease-out 0.3s both' : 'none'
+              }}
             >
               <a
                 className="nav-link dropdown-toggle small d-flex align-items-center gap-2"
                 href="#"
-                onClick={(e) => { 
-                  e.preventDefault(); 
+                onClick={(e) => {
+                  e.preventDefault();
                   if (isMobileView) {
                     setIsBrandsDropdownOpen(!isBrandsDropdownOpen);
                     setActiveBrandMobile(null);
@@ -476,9 +518,9 @@ export const Header = () => {
                 Marcas
               </a>
 
-              <ul 
-                className={`dropdown-menu ${isBrandsDropdownOpen ? "show" : ""}`} 
-                style={{ 
+              <ul
+                className={`dropdown-menu ${isBrandsDropdownOpen ? "show" : ""}`}
+                style={{
                   background: colors.dropdown.background,
                   border: `1px solid ${colors.dropdown.border}`,
                   borderRadius: "8px",
@@ -486,8 +528,8 @@ export const Header = () => {
                 }}
               >
                 {CAR_BRANDS.map((brand) => (
-                  <li 
-                    key={brand.id} 
+                  <li
+                    key={brand.id}
                     className="dropdown-submenu position-relative"
                     ref={el => brandItemsRef.current[brand.id] = el}
                     onMouseEnter={() => handleBrandHover(brand.id)}
@@ -496,13 +538,13 @@ export const Header = () => {
                     <a
                       className="dropdown-item d-flex justify-content-between align-items-center"
                       href="#"
-                      onClick={(e) => { 
-                        e.preventDefault(); 
+                      onClick={(e) => {
+                        e.preventDefault();
                         if (isMobileView) {
                           handleBrandClick(brand.id);
                         }
                       }}
-                      style={{ 
+                      style={{
                         cursor: 'pointer',
                         padding: '0.75rem 1rem',
                         borderBottom: `1px solid ${colors.dropdown.border}`,
@@ -514,14 +556,14 @@ export const Header = () => {
                       onMouseLeave={(e) => e.target.style.background = 'transparent'}
                     >
                       <div className="d-flex align-items-center gap-2">
-                        <img 
-                          src={brand.logo} 
-                          alt={`Logo ${brand.name}`} 
-                          style={{ 
-                            width: 20, 
-                            height: 20, 
+                        <img
+                          src={brand.logo}
+                          alt={`Logo ${brand.name}`}
+                          style={{
+                            width: 20,
+                            height: 20,
                             objectFit: "contain",
-                          }} 
+                          }}
                         />
                         {brand.name}
                         {isMobileView && (
@@ -539,9 +581,9 @@ export const Header = () => {
 
                     {/* Submenu de modelos - VERSIÓN DESKTOP */}
                     {!isMobileView && hoverBrandDesktop === brand.id && (
-                      <ul 
+                      <ul
                         className="dropdown-menu show position-absolute"
-                        style={{ 
+                        style={{
                           background: colors.submenu.background,
                           left: brandsSubmenuPosition === "right" ? "100%" : "auto",
                           right: brandsSubmenuPosition === "left" ? "100%" : "auto",
@@ -554,7 +596,7 @@ export const Header = () => {
                       >
                         {brand.models.map((model, idx) => (
                           <li key={idx}>
-                            <a 
+                            <a
                               className="dropdown-item"
                               href="#"
                               onClick={(e) => {
@@ -582,20 +624,21 @@ export const Header = () => {
 
                     {/* Submenu de modelos - VERSIÓN MOBILE */}
                     {isMobileView && activeBrandMobile === brand.id && (
-                      <ul 
+                      <ul
                         className="dropdown-menu show position-relative"
-                        style={{ 
+                        style={{
                           background: colors.submenu.background,
                           margin: "5px 0 5px 15px",
                           border: `1px solid ${colors.submenu.border}`,
                           borderRadius: "6px",
-                          boxShadow: "inset 0 2px 8px rgba(0,0,0,0.2)"
+                          boxShadow: "inset 0 2px 8px rgba(0,0,0,0.2)",
+                          animation: 'slideInFromLeft 0.3s ease-out'
                         }}
                       >
                         {brand.models.map((model, idx) => (
                           <li key={idx}>
-                            <a 
-                              className="dropdown-item" 
+                            <a
+                              className="dropdown-item"
                               href="#"
                               onClick={(e) => {
                                 e.preventDefault();
@@ -620,8 +663,14 @@ export const Header = () => {
                 ))}
               </ul>
             </li>
-            <li className="nav-item">
-              <a 
+
+            <li 
+              className="nav-item"
+              style={{
+                animation: isMenuOpen && isMobileView ? 'slideInFromLeft 0.4s ease-out 0.4s both' : 'none'
+              }}
+            >
+              <a
                 className="nav-link small d-flex align-items-center gap-2"
                 href="#sobre"
                 onClick={(e) => {
@@ -635,8 +684,13 @@ export const Header = () => {
               </a>
             </li>
 
-            <li className="nav-item">
-              <a 
+            <li 
+              className="nav-item"
+              style={{
+                animation: isMenuOpen && isMobileView ? 'slideInFromLeft 0.4s ease-out 0.5s both' : 'none'
+              }}
+            >
+              <a
                 className="nav-link small d-flex align-items-center gap-2"
                 href="#contact"
                 onClick={(e) => {
@@ -651,6 +705,55 @@ export const Header = () => {
             </li>
           </ul>
         </div>
+
+        {/* Adicionar estilos CSS para as animações */}
+        <style>
+          {`
+            @keyframes slideInFromLeft {
+              0% {
+                transform: translateX(-20px);
+                opacity: 0;
+              }
+              100% {
+                transform: translateX(0);
+                opacity: 1;
+              }
+            }
+
+            @keyframes fadeIn {
+              0% {
+                opacity: 0;
+              }
+              100% {
+                opacity: 1;
+              }
+            }
+
+            .navbar-collapse-custom {
+              transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            @media (max-width: 991.98px) {
+              .navbar-collapse-custom {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 280px;
+                height: 100vh;
+                background: ${colors.primary.gradient};
+                z-index: 1050;
+                padding: 80px 20px 20px 20px;
+                transform: translateX(-100%);
+                overflow-y: auto;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+              }
+              
+              .navbar-collapse-custom.show {
+                transform: translateX(0);
+              }
+            }
+          `}
+        </style>
       </div>
     </header>
   );

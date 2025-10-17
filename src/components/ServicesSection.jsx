@@ -38,13 +38,13 @@ const SERVICES = [
 ];
 
 export const ServicesSection = React.memo(() => (
-  <section id="services" className="py-5 bg-w">
+  <section id="services" className="py-4 pb-5 bg-w">
     <div className="container">
       <div className="text-center mb-5">
         <span className="badge bg-primary text-white px-4 py-2 rounded-pill fw-semibold mb-3">
           Serviços
         </span>
-        <h2 className="fw-bold display-5 mb-3 text-light">Excelência em Cada Detalhe</h2>
+        <h2 className="fw-bold display-5 mb-3 text-light">Excelência em Cada <span className="text-primary">Detalhe</span> </h2>
         <p className="lead text-light mx-auto" style={{ maxWidth: "600px" }}>
           Soluções completas e personalizadas para todas as necessidades do seu veículo
         </p>
@@ -52,7 +52,7 @@ export const ServicesSection = React.memo(() => (
 
       <div className="row g-4">
         {SERVICES.map((service) => (
-          <div key={service.id} className="col-12 col-md-6 col-lg-3">
+          <div key={service.id} className="col-12 col-md-6 col-lg-3 px-4">
             <div className="service-card card border-0 h-100 text-center p-4 rounded-4" style={{ background: "#2f3c4e3e", backdropFilter: 'blur(100)', border: "1px solid #2f3c4e3e", boxShadow: " 2px 5px 5px #26252f " }}>
               <div className={`bg-${service.color} rounded-3 p-3 mx-auto mb-4`}>
                 {service.icon}

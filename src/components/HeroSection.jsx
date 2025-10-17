@@ -1,5 +1,5 @@
 import React from "react";
-import { FaCheck, FaStar} from "react-icons/fa";
+import { FaCheck, FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import heroCarWebP from "../assets/teste.png";
 
@@ -18,10 +18,7 @@ export const Hero = React.memo(() => {
             overflow: "hidden"
         }}>
             {/* Background Elements */}
-            <div className="position-absolute w-100 h-100" style={{
-                background: 'url("/src/assets/logo.svg") left no-repeat',
-                opacity: '.1'
-            }}></div>
+            <div className="position-absolute w-100 h-100 logo-bg"></div>
 
             <div className="container-fluid px-3 px-md-5 position-relative">
                 <div className="row align-items-center py-5">
@@ -69,7 +66,7 @@ export const Hero = React.memo(() => {
                         </div>
                     </div>
 
-                    <div className="col-12 col-lg-6 text-center mt-5 mt-lg-0">
+                    <div className="col-12 col-lg-6 text-center mt-5 mt-lg-0" style={{ objectFit: "contain" }}>
                         <div className="position-relative">
                             <div className="hero-image-container">
                                 <img
@@ -82,6 +79,23 @@ export const Hero = React.memo(() => {
                     </div>
                 </div>
             </div>
+            <style>
+                {
+                    `
+                .logo-bg{
+                        background: url("/src/assets/logo.svg") left no-repeat;
+                        opacity: .1;
+                    }
+                @media(max-width: 991.98px){
+                    .logo-bg{
+                        background: url("/src/assets/logo.svg") center no-repeat;
+                        opacity: .2;
+                    }
+                }
+                `
+                }
+
+            </style>
         </section>
     )
 });

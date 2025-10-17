@@ -11,27 +11,27 @@ import {
 const FEATURES = [
   {
     icon: <FaShippingFast size={28} />,
-    title: "Entrega Express",
-    description: "Entregamos em até 24h na região metropolitana",
+    title: "Entrega ao Domicílio",
+    description: "Entregas gratuitas em Bissau",
     stat: "24h"
   },
   {
     icon: <FaAward size={28} />,
-    title: "Qualidade Premium",
+    title: "Qualidade Indubitável",
     description: "Peças com certificado de autenticidade e garantia",
     stat: "100%"
   },
   {
     icon: <FaHeadset size={28} />,
-    title: "Suporte Expert",
-    description: "Equipe técnica especializada para orientação",
+    title: "Serviços de Excelência",
+    description: "Equipe técnica especializada",
     stat: "24/7"
   },
   {
     icon: <FaShieldAlt size={28} />,
-    title: "Compra Segura",
-    description: "Ambiente seguro com certificado SSL",
-    stat: "SSL"
+    title: "Produtos Autênticos",
+    description: "Produtos originais e de qualidade!",
+    stat: "Seguros"
   }
 ];
 
@@ -39,7 +39,7 @@ const FEATURES = [
 
 export const FeaturesSection = React.memo(() => (
 
-  <section id="marcas" className="p-5 position-relative overflow-hidden">
+  <section id="marcas" className="p-4 position-relative overflow-hidden">
     {/* Background com gradiente dinâmico */}
     <div className="position-absolute top-0 start-0 w-100 h-100">
       <div
@@ -62,9 +62,9 @@ export const FeaturesSection = React.memo(() => (
       />
     </div>
 
-    <div className="container-fluid position-relative text-light py-5">
+    <div className=" position-relative text-light py-2">
       <div className="text-center mb-5">
-        <h2 className="fw-bold display-5 mb-3">Por que nos escolher?</h2>
+        <h2 className="fw-bold display-5 mb-3">Por que nos <span className="text-primary">escolher? </span></h2>
         <p className="lead text-light mx-auto" style={{ maxWidth: "600px" }}>
           Combinamos qualidade, tecnologia e atendimento para a melhor experiência
         </p>
