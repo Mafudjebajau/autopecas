@@ -6,6 +6,9 @@ import ServicePage from './pages/ServicePage';
 import CarModelPage from './pages/CarModelPage';
 import BrandsPage from './pages/BrandPage';
 import AboutPage from './pages/AboutPage';
+import DeliveryPage from './pages/DeliveryPage';
+import NotFoundPage from './pages/NotFoundPage';
+import ArtigosPage from './pages/ArtigosPage'
 // import './App.css'
 
 function App() {
@@ -18,6 +21,9 @@ function App() {
         <Route path="/modelo/:modelName" element={<ModelPage />} />
         <Route path="/servico/:serviceName" element={<ServicePage />} />
         <Route path='/sobre' element={<AboutPage/>} />
+        <Route path='/delivery' element={<DeliveryPage/>} />
+        <Route path='/artigos' element={<ArtigosPage/>} />
+        <Route path='*' element={<NotFoundPage/>} />
       </Routes>
     </Router>
   );

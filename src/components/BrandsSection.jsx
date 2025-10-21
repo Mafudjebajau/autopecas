@@ -1,29 +1,56 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import boshlogo from "../assets/bosh-logo.webp";
-import philipslogo from "../assets/philips-logo.webp";
-import logo_3m from "../assets/3m-logo.webp";
-import bardahllogo from "../assets/bardahl-logo.webp";
-import toyotalogo from "../assets/toyota-logo.png"
-
-
-const CAR_BRANDS = [
-  { id: 1, name: "Toyota", logo: toyotalogo },
-  { id: 2, name: "BMW", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg" },
-  { id: 3, name: "Mercedes", logo: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg" },
-  { id: 4, name: "Bosch", logo: boshlogo },
-  { id: 5, name: "Philips", logo: philipslogo },
-  { id: 6, name: "3M", logo: logo_3m },
-  { id: 7, name: "Bardahl", logo: bardahllogo },
-];
+import toyotalogo from "../assets/toyota-logo.png"; // Add missing import
 
 export const BrandsSection = React.memo(() => {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const containerRef = useRef(null);
   const [visibleItems, setVisibleItems] = useState(5);
+  const [CAR_BRANDS, setCAR_BRANDS] = useState([]); // Fixed variable name
+  const [loading, setLoading] = useState(true); // Add loading state
 
-  const scrollInterval = 3000; // tempo entre movimentos
+  useEffect(() => {
+    async function carregarDados() {
+      try {
+        setLoading(true);
+        // const response = await fetch('http://192.168.1.131:8000/brand/');
+        
+        // if (!response.ok) {
+        //   throw new Error('Erro ao carregar marcas');
+        // }
+        
+        // const data = await response.json();
+        // const formattedData = data.map(item => ({
+        //   id: item.id,
+        //   name: item.name,
+        //   logo: item.logo || toyotalogo, // Use the imported toyotalogo
+        // }));
+        const formattedData = [
+        {
+          id: 1,
+          name: "toyota",
+          logo: "/src/assets/toyota-logo-600.png"
+        },
+         {
+          id: 2,
+          name: "mercedes",
+          logo: "/src/assets/mercedes-logo-600.png"
+        }
+        ]
+        setCAR_BRANDS(formattedData);
+        console.log("Marcas carregadas da API:", formattedData);
+      } catch (error) {
+        console.error("Erro ao carregar marcas:", error);
+        // You could set some fallback data here if needed
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    carregarDados();
+  }, []);
+
   const totalBrands = CAR_BRANDS.length;
 
   // Ajustar número de itens visíveis baseado no tamanho da tela
@@ -42,15 +69,6 @@ export const BrandsSection = React.memo(() => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  // rolagem automática
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % totalBrands);
-    }, scrollInterval);
-
-    return () => clearInterval(interval);
-  }, [totalBrands]);
 
   // Calcular qual índice está no centro
   const getCenterIndex = (index) => {
@@ -98,6 +116,48 @@ export const BrandsSection = React.memo(() => {
     return indices;
   };
 
+  // Funções de navegação manual
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % totalBrands);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + totalBrands) % totalBrands);
+  };
+
+  const goToSlide = (index) => {
+    setCurrentIndex(index);
+  };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <section id="marcas" className="py-1 position-relative overflow-hidden">
+        <div className="container-fluid position-relative py-2">
+          <div className="text-center py-5">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Carregando...</span>
+            </div>
+            <p className="text-white mt-3">Carregando marcas...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Don't render carousel if no brands
+  if (CAR_BRANDS.length === 0) {
+    return (
+      <section id="marcas" className="py-1 position-relative overflow-hidden">
+        <div className="container-fluid position-relative py-2">
+          <div className="text-center py-5">
+            <p className="text-white">Nenhuma marca encontrada.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="marcas" className="py-1 position-relative overflow-hidden">
       {/* Background com gradiente dinâmico */}
@@ -143,6 +203,74 @@ export const BrandsSection = React.memo(() => {
 
         {/* Carrossel de Marcas */}
         <div className="brands-carousel position-relative">
+          {/* Botões de navegação */}
+          <div className="carousel-controls d-flex justify-content-between align-items-center position-absolute top-50 start-0 end-0">
+            <div className="ms-5 transformed">
+              <button
+                className="btn btn-control-prev  ms-5 "
+                onClick={prevSlide}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '50%',
+                  width: '50px',
+                  height: '50px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '1.5rem',
+                  marginLeft: '1rem',
+                  transition: 'all 0.3s ease',
+                  zIndex: 50
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                  e.target.style.transform = 'scale(1.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                  e.target.style.transform = 'scale(1)';
+                }}
+              >
+                ‹
+              </button>
+            </div>
+            <div className="me-5 transformed">
+              <button
+                className="btn btn-control-next  me-5 "
+                onClick={nextSlide}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '50%',
+                  width: '50px',
+                  height: '50px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '1.5rem',
+                  marginRight: '1rem',
+                  transition: 'all 0.3s ease',
+                  zIndex: 50
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                  e.target.style.transform = 'scale(1.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                  e.target.style.transform = 'scale(1)';
+                }}
+              >
+                ›
+              </button>
+            </div>
+          </div>
+
           <div
             className="d-flex justify-content-center align-items-center"
             style={{
@@ -160,7 +288,7 @@ export const BrandsSection = React.memo(() => {
 
               return (
                 <div
-                  key={`${brandIndex}-${positionIndex}`}
+                  key={`${brand.id}-${positionIndex}`} // Use brand.id for better key
                   onClick={() => navigate("/marcas")}
                   className="brand-card-modern text-center p-4 rounded-4 position-relative"
                   style={{
@@ -184,11 +312,10 @@ export const BrandsSection = React.memo(() => {
                     zIndex: zIndex,
                     boxShadow: isCenter
                       ? '2px 5px 5px #26252f34 '
-                      : '2px 5px 5px #26252f '
+                      : '2px 5px 5px #26252f ',
+                    cursor: 'pointer'
                   }}
-
                 >
-
                   {/* Container do Logo */}
                   <div
                     className="logo-modern-container mb-3"
@@ -236,22 +363,23 @@ export const BrandsSection = React.memo(() => {
           </div>
 
           {/* Indicadores de Progresso */}
-          <div className="slide-indicators text-center mt-0">
+          <div className="slide-indicators text-center mt-4">
             {CAR_BRANDS.map((_, index) => (
               <button
                 key={index}
                 className={`slide-indicator mx-1 ${currentIndex === index ? 'active' : ''}`}
-                onClick={() => setCurrentIndex(index)}
+                onClick={() => goToSlide(index)}
                 style={{
-                  width: '10px',
-                  height: '10px',
+                  width: '12px',
+                  height: '12px',
                   borderRadius: '50%',
                   border: 'none',
                   background: currentIndex === index
                     ? 'linear-gradient(135deg, #f50b0bff 0%, #f91616ff 100%)'
                     : 'rgba(255, 255, 255, 0.3)',
                   transition: 'all 0.3s ease',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  transform: currentIndex === index ? 'scale(1.2)' : 'scale(1)'
                 }}
               />
             ))}
@@ -259,20 +387,22 @@ export const BrandsSection = React.memo(() => {
         </div>
 
         {/* Stats Bar */}
-
-
-
       </div>
 
       <style jsx>{`
+      .transformed{
+        transform: translateY(-100%) !important;
+        }
         .icon-header {
           width: 80px;
           height: 80px;
         }
-.bg-w{
-background: rgba(23, 24, 36, 0.97);
-color: white !important;
-}
+        
+        .bg-w{
+          background: rgba(23, 24, 36, 0.97);
+          color: white !important;
+        }
+
         .icon-wrapper {
           width: 100%;
           height: 100%;
@@ -291,7 +421,6 @@ color: white !important;
           z-index: 40 !important;
         }
           
-
         .brand-card-modern:hover img {
           transform: scale(1.15);
         }
@@ -300,6 +429,13 @@ color: white !important;
           .brand-card-modern {
             width: 160px !important;
             height: 160px !important;
+          }
+          
+          .btn-control-prev,
+          .btn-control-next {
+            width: 40px !important;
+            height: 40px !important;
+            font-size: 1.2rem !important;
           }
         }
 
@@ -313,6 +449,15 @@ color: white !important;
             width: 60px !important;
             height: 60px !important;
           }
+          
+          .btn-control-prev,
+          .btn-control-next {
+            width: 35px !important;
+            height: 35px !important;
+            font-size: 1rem !important;
+            margin-left: 0.5rem !important;
+            margin-right: 0.5rem !important;
+          }
         }
 
         @media (max-width: 576px) {
@@ -325,8 +470,14 @@ color: white !important;
           .logo-modern-container {
             width: 50px !important;
             height: 50px !important;
-          }import { Link } from 'react-router-dom';
-
+          }
+          
+          .btn-control-prev,
+          .btn-control-next {
+            width: 30px !important;
+            height: 30px !important;
+            font-size: 0.9rem !important;
+          }
         }
       `}</style>
     </section>

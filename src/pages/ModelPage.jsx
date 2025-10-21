@@ -24,13 +24,13 @@ import { Footer } from "../components/Footer";
 // Categorías con íconos
 const CATEGORIES = [
     { id: 'all', name: 'Todas as Peças', icon: <FaCar size={20} />, color: '#3b82f6' },
-    { id: 'motor', name: 'Motor', icon: <FaCog size={20} />, color: '#dc3545' },
+    { id: 'motor', name: 'filtros', icon: <FaCog size={20} />, color: '#dc3545' },
     { id: 'luminarias', name: 'Luminárias', icon: <FaLightbulb size={20} />, color: '#ffc107' },
     { id: 'interior', name: 'Interior', icon: <FaChair size={20} />, color: '#28a745' },
     { id: 'suspensao', name: 'Suspensão', icon: <FaShieldAlt size={20} />, color: '#6f42c1' },
-    { id: 'freios', name: 'Freios', icon: <FaTachometerAlt size={20} />, color: '#fd7e14' },
+    { id: 'freios', name: 'Travoes', icon: <FaTachometerAlt size={20} />, color: '#fd7e14' },
     { id: 'eletrica', name: 'Elétrica', icon: <FaBolt size={20} />, color: '#20c997' },
-    { id: 'acessorios', name: 'Acessórios', icon: <FaMusic size={20} />, color: '#e83e8c' }
+    { id: 'acessorios', name: 'Acessórios univesais', icon: <FaMusic size={20} />, color: '#e83e8c' }
 ];
 
 // Imagens reais dos modelos de carro
@@ -51,7 +51,6 @@ const MODEL_INFO = {
     "Corolla": {
         brand: "Toyota",
         year: "2024",
-        description: "Sedã médio conhecido por sua confiabilidade e eficiência"
     },
     "Hilux": {
         brand: "Toyota", 

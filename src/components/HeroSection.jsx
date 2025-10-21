@@ -1,7 +1,7 @@
 import React from "react";
 import { FaCheck, FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import heroCarWebP from "../assets/teste.png";
+import heroCarWebP from "../assets/teste2.png";
 
 
 export const Hero = React.memo(() => {
@@ -30,11 +30,11 @@ export const Hero = React.memo(() => {
                         </div>
                         <h1 className="fw-bold display-3 mb-4 lh-sm">
                             Excelência em
-                            <span className="text-primary"> Peças Automotivas</span>
+                            <span className="text-primary"> Peças Auto</span>
                         </h1>
                         <p className="lead mb-4 fs-5 text-light">
                             Descubra a diferença da qualidade premium. Peças genuínas,
-                            atendimento especializado e entrega ágil para manter seu veículo em perfeito estado.
+                            atendimento especializado e entrega rápida para manter seu veículo em perfeitas condições.
                         </p>
                         <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">
                             <a href="" className="btn btn-danger btn-lg fw-semibold px-5 py-3 rounded-pill" onClick={(e) => {
@@ -44,8 +44,17 @@ export const Hero = React.memo(() => {
                             }}>
                                 Explorar Marcas
                             </a>
-                            <a href="#services" className="btn btn-outline-light btn-lg px-5 py-3 rounded-pill">
-                                Nossos Serviços
+                             <a href="#" onClick={(e)=>{
+                                e.preventDefault()
+                                   navigate("/artigos")
+                            }} className="btn btn-outline-primary btn-lg px-5 py-3 rounded-pill">
+                                Artigos Universais
+                            </a>
+                            <a href="#" onClick={(e)=>{
+                                e.preventDefault()
+                                   navigate("/delivery")
+                            }} className="btn btn-outline-light btn-lg px-5 py-3 rounded-pill">
+                                Entrega ao domicílio
                             </a>
                         </div>
 
@@ -83,12 +92,12 @@ export const Hero = React.memo(() => {
                 {
                     `
                 .logo-bg{
-                        background: url("/src/assets/logo.svg") left no-repeat;
+                        background: url("/src/assets/logo2.png") center no-repeat;
                         opacity: .1;
                     }
                 @media(max-width: 991.98px){
                     .logo-bg{
-                        background: url("/src/assets/logo.svg") center no-repeat;
+                        background: url("/src/assets/logo2.png") top left no-repeat;
                         opacity: .2;
                     }
                 }

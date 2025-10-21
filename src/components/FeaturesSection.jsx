@@ -23,8 +23,8 @@ const FEATURES = [
   },
   {
     icon: <FaHeadset size={28} />,
-    title: "Serviços de Excelência",
-    description: "Equipe técnica especializada",
+    title: "Equipa técnica competente",
+    description: "Vasta experiência",
     stat: "24/7"
   },
   {
@@ -64,9 +64,9 @@ export const FeaturesSection = React.memo(() => (
 
     <div className=" position-relative text-light py-2">
       <div className="text-center mb-5">
-        <h2 className="fw-bold display-5 mb-3">Por que nos <span className="text-primary">escolher? </span></h2>
+        <h2 className="fw-bold display-5 mb-3">Porque procurar os nossos <span className="text-primary">Serviços? </span></h2>
         <p className="lead text-light mx-auto" style={{ maxWidth: "600px" }}>
-          Combinamos qualidade, tecnologia e atendimento para a melhor experiência
+          Combinamos qualidade, tecnologia e atendimento personalizado para a sua maior satisfação.
         </p>
       </div>
 

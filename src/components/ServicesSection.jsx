@@ -1,14 +1,15 @@
 import React from "react";
-import {FaCheckCircle, FaCog, FaTools, FaCar, FaClipboardList} from "react-icons/fa";
+import { FaCheckCircle, FaCog, FaTools, FaCar, FaClipboardList } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 
 const SERVICES = [
   {
     id: 1,
     title: "Venda de Peças",
-    description: "Peças originais e compatíveis com garantia de procedência",
+    description: "Peças genuínas, compatíveis e com garantia de procedência",
     icon: <FaCog size={32} />,
-    features: ["Garantia estendida", "Entrega express", "Qualidade certificada"],
+    features: ["Fabrico Europeu", "Qualidade certificada", "Entrega ao domicílio", "Encomendas", 'Artigos Universais'],
     color: "primary"
   },
   {
@@ -16,29 +17,33 @@ const SERVICES = [
     title: "Manutenção",
     description: "Serviços especializados em manutenção preventiva e corretiva",
     icon: <FaTools size={32} />,
-    features: ["Troca de oleo", "Alinhamento", "Baleanceamento", "Revisao Geral"],
+    features: ["Mudança de óleo & filtros", "Alinhamento", "Calibragem de rodas", "Revisao Geral & periódica"],
     color: "success"
   },
   {
     id: 3,
-    title: "Reparos Especializados",
-    description: "Reparos técnicos com equipamentos de última geração",
+    title: "Reparação Especializada",
+    description: "Reparação técnica com equipamentos de última geração",
     icon: <FaCar size={32} />,
-    features: ["Tecnologia avançada", "Garantia nos serviços", "Agilidade"],
+    features: ["Tecnologia avançada", "Garantia nos serviços", "Celeridade"],
     color: "warning"
   },
   {
     id: 4,
-    title: "Consultoria Técnica",
-    description: "Assessoria técnica personalizada para seu veículo",
+    title: "Diagnóstico",
+    description: "Diagnóstico profissional e detalhado do seu veículo",
     icon: <FaClipboardList size={32} />,
-    features: ["Análise detalhada", "Orientações precisas", "Soluções customizadas"],
+    features: ["Análise detalhada", "Orientações precisas", "Soluções personalizadas"],
     color: "info"
   }
 ];
 
-export const ServicesSection = React.memo(() => (
-  <section id="services" className="py-4 pb-5 bg-w">
+
+export const ServicesSection = React.memo(() => {
+  const navigate = useNavigate()
+
+  return(
+      <section id="services" className="py-4 pb-5 bg-w">
     <div className="container">
       <div className="text-center mb-5">
         <span className="badge bg-primary text-white px-4 py-2 rounded-pill fw-semibold mb-3">
@@ -64,10 +69,21 @@ export const ServicesSection = React.memo(() => (
                   <li key={index} className="mb-2">
                     <small className="text-light fs-6 fw-bold">
                       <FaCheckCircle className="text-success me-2" />
-                      {feature}
+                      {feature.includes("Artigos Universais") ? (
+                        <a href="#" onClick={(e) => {
+                          e.preventDefault();
+                          scroll(top)
+                          navigate("/artigos")
+                        }} className="text-decoration-underline text-primary">
+                          {feature}
+                        </a>
+                      ) : (
+                        feature
+                      )}
                     </small>
                   </li>
                 ))}
+
               </ul>
             </div>
           </div>
@@ -85,4 +101,5 @@ export const ServicesSection = React.memo(() => (
       }
     `}</style>
   </section>
-));
+  )
+});

@@ -1,0 +1,175 @@
+/* Reutilizando variáveis de cor do ServicePage.css para consistência */
+:root {
+  --primary-dark: #0f172a;
+  --secondary-dark: #1e293b;
+  --tertiary-dark: #334155;
+  --accent-color: #16f9db;
+  --text-light: #f8fafc;
+  --text-muted: #cbd5e1;
+}
+
+/* Seção Hero */
+.hero-section {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 50%, var(--tertiary-dark) 100%);
+  color: var(--text-light);
+  padding-top: 7rem;
+  padding-bottom: 4rem;
+  text-align: center;
+}
+
+.hero-section h1 {
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Seção de Lista de Serviços */
+.services-list-section {
+  padding: 5rem 0;
+  background-color: #f8f9fa;
+}
+
+.service-card {
+  background: white;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.service-card .card-header {
+  background: transparent;
+  border-bottom: 1px solid #e9ecef;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.service-card .card-header .icon-wrapper {
+  width: 70px;
+  height: 70px;
+  background: rgba(13, 110, 253, 0.1); /* Azul Bootstrap */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: #0d6efd; /* Azul Bootstrap */
+}
+
+.service-card .card-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.service-card .card-body {
+  padding: 1.5rem;
+  flex-grow: 1;
+}
+
+.service-card .subservices-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.service-card .subservices-list li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.service-card .subservices-list li:last-child {
+  border-bottom: none;
+}
+
+.service-card .subservices-list a {
+  color: var(--secondary-dark);
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.service-card .subservices-list a:hover {
+  color: #0d6efd; /* Azul Bootstrap */
+}
+
+.service-card .subservices-list .price {
+  font-weight: 400;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.service-card .card-footer {
+  background: transparent;
+  border-top: 1px solid #e9ecef;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+/* Seção "Porquê Nos Escolher" */
+.why-choose-us-section {
+  padding: 5rem 0;
+  background-color: white;
+}
+
+.why-choose-us-section h2 {
+  font-weight: 700;
+  margin-bottom: 3rem;
+  text-align: center;
+  color: var(--primary-dark);
+}
+
+.feature-box {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.feature-box .feature-icon {
+  font-size: 3rem;
+  color: var(--accent-color);
+  margin-bottom: 1.5rem;
+}
+
+.feature-box h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--secondary-dark);
+}
+
+.feature-box p {
+  color: var(--text-muted);
+}
+
+/* Seção de Call to Action (CTA) */
+.cta-section {
+  background-color: var(--secondary-dark);
+  color: var(--text-light);
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.cta-section h2 {
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.cta-section .lead {
+  margin-bottom: 2rem;
+}

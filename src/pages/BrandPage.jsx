@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FaSearch, FaCar, FaAward, FaHeadset, FaArrowRight } from "react-icons/fa";
 import { Footer } from "../components/Footer";
+import Loader from "../components/Loading_Component";
 
 // Dados das marcas exatamente no padrão fornecido
 const CAR_BRANDS = [
@@ -37,7 +38,7 @@ export default function BrandsPage() {
     // Simular carregamento
     setTimeout(() => {
       setLoading(false);
-    }, 8000);
+    }, 800);
 
     // Detectar mudanca de tela
     const checkScreenSize = () => {
@@ -59,26 +60,7 @@ export default function BrandsPage() {
 
   if (loading) {
     return (
-      <>
-        <Header />
-        <div className="min-vh-100 bg-dark d-flex w-100 justify-content-center align-items-center">
-          <div className="container py-5 ">
-            <div className="text-center py-5 gap-2">
-              
-               <div class="spinner-grow text-primary" role="status">
-                  <span class="visually-hidden">Loading...</span>
-                </div>
-                  <div class="spinner-grow text-danger p-3" role="status">
-                  <span class="visually-hidden">Loading...</span>
-                </div>
-                  <div class="spinner-grow text-primary" role="status">
-                  <span class="visually-hidden">Loading...</span>
-                </div>
-              <p className="mt-3 text-light">Carregando marcas...</p>
-            </div>
-          </div>
-        </div>
-      </>
+      <Loader />
     );
   }
 
@@ -102,8 +84,7 @@ export default function BrandsPage() {
                 <span className="text-primary">Marcas</span> Disponíveis
               </h1>
               <p className="lead mb-4 fs-5">
-                Trabalhamos com as melhores marcas do mercado automotivo mundial.
-                Explore nossa seleção premium e encontre peças de veículo perfeito para você.
+                Explore e encontre peças de veículo perfeito para ti.
               </p>
               {!isMobileView &&
                 <div className="row text-center">
@@ -140,7 +121,9 @@ export default function BrandsPage() {
                     justifyContent: 'center'
                   }}
                 >
-                  <FaCar size={64} className="text-primary" />
+                  <FaCar size={24} className="text-primary" />
+                  <FaCar size={64} className="text-info" />
+                  <FaCar size={24} className="text-primary" />
                 </div>
               </div>
             </div>

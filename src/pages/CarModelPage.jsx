@@ -1,8 +1,9 @@
 import { Header } from "../components/Header";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { FaArrowLeft, FaSearch, FaCar, FaHeadset, FaFilter, FaCog } from "react-icons/fa";
+import { FaArrowLeft, FaSearch, FaCar, FaHeadset, FaFilter, FaCog, FaArrowRight } from "react-icons/fa";
 import { Footer } from "../components/Footer";
+import Loader from "../components/Loading_Component";
 
 // Dados das marcas exatamente no padrão fornecido
 const CAR_BRANDS = [
@@ -60,7 +61,6 @@ const BRAND_INFO = {
   "toyota": {
     name: "Toyota",
     logo: "https://global.toyota/pages/global_toyota/mobility/toyota-brand/emblem_001.jpg",
-    description: "Desde 1937, a Toyota é sinônimo de qualidade, durabilidade e inovação.",
     founded: 1937,
     country: "Japão"
   },
@@ -141,18 +141,7 @@ export default function CarModelPage() {
 
   if (loading) {
     return (
-      <>
-        <div className="min-vh-100 bg-dark">
-          <div className="container py-5">
-            <div className="text-center py-5">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Carregando...</span>
-              </div>
-              <p className="mt-3">Carregando modelos...</p>
-            </div>
-          </div>
-        </div>
-      </>
+      <Loader/>
     );
   }
 
@@ -160,7 +149,7 @@ export default function CarModelPage() {
     return (
       <>
         <Header />
-        <div className="min-vh-100 bg-light pt-5">
+        <div className="min-vh-100 bg-dark pt-5">
           <div className="container py-5">
             <div className="text-center py-5">
               <h2>Marca não encontrada</h2>
@@ -241,7 +230,7 @@ export default function CarModelPage() {
       </section>
 
       {/* Filtros e Busca */}
-      <section className="py-5  h-100 position-relative container-fluid">
+      <section className="py-4  h-100 position-relative container-fluid">
         {/* Background com gradiente dinâmico */}
         <div className="position-absolute top-0 start-0 w-100 h-100">
           <div
@@ -265,6 +254,9 @@ export default function CarModelPage() {
         </div>
         <div className="container text-light">
           <div className="row g-3 align-items-center">
+            <div className="col-12 position-relative">
+              <h1 className="text-light">Modelos disponíveis</h1>
+            </div>
             <div className="col-lg-6">
               <div className="input-group">
                 <span className="input-group-text bg-light border-end-0">
@@ -280,42 +272,18 @@ export default function CarModelPage() {
               </div>
             </div>
 
-            <div className="col-lg-6">
-              <div className="row g-2">
-                <div className="col-md-8">
-                  <select
-                    className="form-select"
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                  >
-                    <option value="all">Todas as Categorias</option>
-                    {categories.filter(cat => cat !== "all").map(category => (
-                      <option key={category} value={category}>{category}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="col-md-4">
-                  <select
-                    className="form-select"
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                  >
-                    <option value="name">Ordenar por Nome</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            
           </div>
         </div>
 
 
         {/* Lista de Modelos */}
 
-        <div className="container">
-          <div className="row">
-            <div className="col-12">
-              <h2 className="h4 mb-4">
-                {filteredModels.length} modelo{filteredModels.length !== 1 ? 's' : ''} encontrado{filteredModels.length !== 1 ? 's' : ''}
+        <div className="container position-relative">
+          <div className="row ">
+            <div className="col-12 ">
+              <h2 className="h4 mb-4 text-secondary pt-3">
+                <span className={filteredModels.length > 0 ? 'text-primary': 'text-danger' }>{filteredModels.length}</span> modelo{filteredModels.length !== 1 ? 's' : ''} encontrado{filteredModels.length !== 1 ? 's' : ''}
               </h2>
             </div>
           </div>
@@ -323,7 +291,7 @@ export default function CarModelPage() {
           {filteredModels.length === 0 ? (
             <div className="text-center py-5">
               <FaCar size={64} className="text-secondary mb-3" />
-              <h3>Nenhum modelo encontrado</h3>
+              <h3 className="text-light">Nenhum modelo encontrado</h3>
               <p className="text-secondary">Tente ajustar os filtros ou termos de busca.</p>
               <button
                 className="btn btn-primary"
@@ -373,7 +341,7 @@ export default function CarModelPage() {
                         </div>
                         <div className="d-flex justify-content-between align-items-center">
                           <button className="btn btn-primary btn-sm">
-                            Ver Detalhes
+                            Ver peças <FaArrowRight className="ms-2" />
                           </button>
                         </div>
                       </div>

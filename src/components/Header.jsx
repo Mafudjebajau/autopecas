@@ -28,25 +28,19 @@ const SERVICES = [
     id: 1,
     name: "Manutenção",
     icon: <FaTools size={16} />,
-    subservices: ["Troca de Óleo", "Alinhamento", "Balanceamento", "Revisão Periódica"]
+    subservices: ["Mudança de Óleo", "Alinhamento", "Revisão Periódica"]
   },
   {
     id: 2,
-    name: "Reparos",
+    name: "Reparação",
     icon: <FaCar size={16} />,
-    subservices: ["Freios", "Suspensão", "Motor", "Transmissão"]
-  },
-  {
-    id: 3,
-    name: "Peças",
-    icon: <FaCog size={16} />,
-    subservices: ["Originais", "Compatíveis", "Performance", "Acessórios"]
+    subservices: ["Travões", "Suspensão", "Motor", "Transmissão"]
   },
   {
     id: 4,
-    name: "Consultoria",
+    name: "Diagnóstico",
     icon: <FaClipboardList size={16} />,
-    subservices: ["Técnica", "Compra/Venda", "Personalização", "Seguros"]
+    subservices: ["Diagnóstico Profissional"]
   },
 ];
 
@@ -70,7 +64,7 @@ export const Header = () => {
   const menuRef = useRef(null);
   const navbarRef = useRef(null);
 
-  // Paleta de colores harmonizada con el gradiente principal
+  // Paleta de colores harmonizada 
   const colors = {
     primary: {
       gradient: "linear-gradient(90deg, #101b34, #2a3f84)",
@@ -94,7 +88,7 @@ export const Header = () => {
     }
   };
 
-  // Detectar cambio de tamaño de ventana
+  // Detectar mudanca de tela
   useEffect(() => {
     const checkScreenSize = () => {
       setIsMobileView(window.innerWidth < 992);
@@ -156,7 +150,7 @@ export const Header = () => {
     };
   }, [isMenuOpen, isMobileView]);
 
-  // Verificar posición del submenu para marcas
+  // Verificar posicao de submenu para marcas
   const checkBrandSubmenuPosition = (brandId) => {
     if (isMobileView) return "right";
 
@@ -170,7 +164,7 @@ export const Header = () => {
     return spaceOnRight >= submenuWidth ? "right" : "left";
   };
 
-  // Verificar posición del submenu para servicios
+  // Verificar posicao de submenu para servicos
   const checkServiceSubmenuPosition = (serviceId) => {
     if (isMobileView) return "right";
 
@@ -262,7 +256,7 @@ export const Header = () => {
             alt="Logo principal"
             style={{ maxWidth: "70px" }}
           />
-          Trading
+          ebTrading
         </a>
 
         <AnimatedToggler isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} colors={colors} />
@@ -348,7 +342,7 @@ export const Header = () => {
                 style={{ color: colors.dropdown.text }}
               >
                 <FaTools size={14} />
-                Serviços
+                Serviços de Oficina
               </a>
 
               <ul
@@ -406,7 +400,7 @@ export const Header = () => {
                       )}
                     </a>
 
-                    {/* Submenu de subserviços - VERSIÓN DESKTOP */}
+                    {/* Submenu de subserviços - VERSAO DESKTOP */}
                     {!isMobileView && hoverServiceDesktop === service.id && (
                       <ul
                         className="dropdown-menu show position-absolute"
@@ -449,7 +443,7 @@ export const Header = () => {
                       </ul>
                     )}
 
-                    {/* Submenu de subserviços - VERSIÓN MOBILE */}
+                    {/* Submenu de subserviços - VERSAO MOBILE */}
                     {isMobileView && activeServiceMobile === service.id && (
                       <ul
                         className="dropdown-menu show position-relative"
@@ -579,7 +573,7 @@ export const Header = () => {
                       )}
                     </a>
 
-                    {/* Submenu de modelos - VERSIÓN DESKTOP */}
+                    {/* Submenu de modelos - VERSAO DESKTOP */}
                     {!isMobileView && hoverBrandDesktop === brand.id && (
                       <ul
                         className="dropdown-menu show position-absolute"
@@ -622,7 +616,7 @@ export const Header = () => {
                       </ul>
                     )}
 
-                    {/* Submenu de modelos - VERSIÓN MOBILE */}
+                    {/* Submenu de modelos - VERSAO MOBILE */}
                     {isMobileView && activeBrandMobile === brand.id && (
                       <ul
                         className="dropdown-menu show position-relative"
@@ -706,7 +700,7 @@ export const Header = () => {
           </ul>
         </div>
 
-        {/* Adicionar estilos CSS para as animações */}
+        {/*  estilos CSS para as animações */}
         <style>
           {`
             @keyframes slideInFromLeft {
