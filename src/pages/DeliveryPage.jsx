@@ -88,10 +88,9 @@ const DeliveryPage = () => {
       title: "Garantia e Suporte",
       icon: <FaShieldAlt />,
       items: [
-        "Garantia de 12 meses em todas as peças novas",
+        "Garantia de qualidade no nosso atendimento",
         "Suporte técnico gratuito por telefone",
-        "Assistência na instalação disponível para clientes regulares",
-        "Certificado de autenticidade para peças originais"
+        "Peças originais"
       ]
     }
   ];

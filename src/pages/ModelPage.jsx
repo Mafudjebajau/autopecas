@@ -20,15 +20,17 @@ import {
 import noimg from "../assets/noimg.png";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { FaFilter } from "react-icons/fa6";
 
 // Categorías con íconos
 const CATEGORIES = [
     { id: 'all', name: 'Todas as Peças', icon: <FaCar size={20} />, color: '#3b82f6' },
-    { id: 'motor', name: 'filtros', icon: <FaCog size={20} />, color: '#dc3545' },
-    { id: 'luminarias', name: 'Luminárias', icon: <FaLightbulb size={20} />, color: '#ffc107' },
+    { id: 'motor', name: 'Motor', icon: <FaCog size={20} />, color: '#dc3545' },
+     { id: 'filtros', name: 'Filtros', icon: <FaFilter size={20} />, color: '#494e58ff' },
+    { id: 'farois', name: 'farois', icon: <FaLightbulb size={20} />, color: '#ffc107' },
     { id: 'interior', name: 'Interior', icon: <FaChair size={20} />, color: '#28a745' },
     { id: 'suspensao', name: 'Suspensão', icon: <FaShieldAlt size={20} />, color: '#6f42c1' },
-    { id: 'freios', name: 'Travoes', icon: <FaTachometerAlt size={20} />, color: '#fd7e14' },
+    { id: 'travoes', name: 'Travoes', icon: <FaTachometerAlt size={20} />, color: '#fd7e14' },
     { id: 'eletrica', name: 'Elétrica', icon: <FaBolt size={20} />, color: '#20c997' },
     { id: 'acessorios', name: 'Acessórios univesais', icon: <FaMusic size={20} />, color: '#e83e8c' }
 ];
@@ -126,7 +128,7 @@ const MODEL_PARTS = {
             brand: "Toyota",
             image: noimg,
             name: "Farol Dianteiro Esquerdo",
-            category: 'luminarias',
+            category: 'farois',
             disponivel: true
         },
         {
@@ -160,7 +162,7 @@ const MODEL_PARTS = {
             brand: "Toyota",
             image: noimg,
             name: "Filtro de Combustível",
-            category: 'motor',
+            category: 'filtros',
             disponivel: true
         },
         {
@@ -168,7 +170,7 @@ const MODEL_PARTS = {
             brand: "Toyota",
             image: noimg,
             name: "Lanterna Traseira",
-            category: 'luminarias',
+            category: 'farois',
             disponivel: true
         },
     ],
@@ -220,7 +222,7 @@ const MODEL_PARTS = {
             brand: "BMW",
             image: noimg,
             name: "Xenon Farol Dianteiro",
-            category: 'luminarias',
+            category: 'farois',
             disponivel: true
         },
     ],
@@ -256,7 +258,7 @@ const MODEL_PARTS = {
             brand: "BMW",
             image: noimg,
             name: "LED de Daytime",
-            category: 'luminarias',
+            category: 'farois',
             disponivel: true
         },
     ],
@@ -274,7 +276,7 @@ const MODEL_PARTS = {
             brand: "Mercedes",
             image: noimg,
             name: "Farol Dianteiro",
-            category: 'luminarias',
+            category: 'farois',
             disponivel: true
         },
         {
@@ -624,7 +626,8 @@ export default function ModelPage() {
                                 <CategoryCard
                                     category={category}
                                     isSelected={selectedCategory === category.id}
-                                    onClick={() => setSelectedCategory(category.id)}
+                                    onClick={() => {setSelectedCategory(category.id); scrollTo(0,
+                                        parseFloat(document.body.scrollHeight - document.body.scrollHeight * 70/100),)}}
                                     count={getCategoryCount(category.id)}
                                 />
                             </div>

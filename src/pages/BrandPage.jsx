@@ -8,25 +8,37 @@ import Loader from "../components/Loading_Component";
 // Dados das marcas exatamente no padrão fornecido
 const CAR_BRANDS = [
   {
-    id: 1,
-    name: "Toyota",
-    logo: "https://global.toyota/pages/global_toyota/mobility/toyota-brand/emblem_001.jpg",
-    models: ["Corolla", "Hilux", "Yaris"]
+    "id": 1,
+    "name": "Toyota",
+    "logo": "https://global.toyota/pages/global_toyota/mobility/toyota-brand/emblem_001.jpg",
+    "models": ["Corolla", "Hilux", "Yaris"],
+    "founded":1980,
+    "country": "Japan"
   },
   {
-    id: 2,
-    name: "BMW",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg",
-    models: ["X5", "M3", "i8"]
+    "id": 2,
+    "name": "BMW",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg",
+    "models": ["X5", "M3", "i8"],
+    "founded":1980,
+    "country": "Germany"
   },
   {
-    id: 3,
-    name: "Mercedes",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg",
-    models: ["C-Class", "E-Class", "S-Class"]
+    "id": 3,
+    "name": "Mercedes",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg",
+    "models": ["C-Class", "E-Class", "S-Class"],
+    "founded":1980,
+    "country": "Germany"
   },
 ];
-
+const formattedData = CAR_BRANDS.map(item => ({
+  id: item.id,
+  name: item.name,
+  logo: item.logo,
+  models: item.models
+}));
+console.log(formattedData.map(item => item.name))
 export default function BrandsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredBrands, setFilteredBrands] = useState(CAR_BRANDS);
@@ -210,7 +222,7 @@ export default function BrandsPage() {
 
         <div className="container-fluid position-relative pb-5 text-light">
           <div className="row mb-4">
-           {!isMobileView && <div className="col-12 ">
+            {!isMobileView && <div className="col-12 ">
               <h2 className="h3 mb-2 py-3">
                 Todas as Marcas
               </h2>

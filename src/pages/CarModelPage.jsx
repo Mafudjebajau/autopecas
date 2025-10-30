@@ -7,9 +7,30 @@ import Loader from "../components/Loading_Component";
 
 // Dados das marcas exatamente no padrão fornecido
 const CAR_BRANDS = [
-  { id: 1, name: "Toyota", logo: "https://global.toyota/pages/global_toyota/mobility/toyota-brand/emblem_001.jpg", models: ["Corolla", "Hilux", "Yaris"] },
-  { id: 2, name: "BMW", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg", models: ["X5", "M3", "i8"] },
-  { id: 3, name: "Mercedes", logo: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg", models: ["C-Class", "E-Class", "S-Class"] },
+  {
+    "id": 1,
+    "name": "Toyota",
+    "logo": "https://global.toyota/pages/global_toyota/mobility/toyota-brand/emblem_001.jpg",
+    "models": ["Corolla", "Hilux", "Yaris"],
+    "founded": 1980,
+    "country": "Japan"
+  },
+  {
+    "id": 2,
+    "name": "BMW",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg",
+    "models": ["X5", "M3", "i8"],
+    "founded": 1899,
+    "country": "Germany"
+  },
+  {
+    "id": 3,
+    "name": "Mercedes",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg",
+    "models": ["C-Class", "E-Class", "S-Class"],
+    "founded": 1926,
+    "country": "Germany"
+  },
 ];
 
 // Gerar modelos automaticamente baseado nas marcas
@@ -56,30 +77,6 @@ const generateModelsFromBrands = () => {
   return modelsData;
 };
 
-// Informações das marcas
-const BRAND_INFO = {
-  "toyota": {
-    name: "Toyota",
-    logo: "https://global.toyota/pages/global_toyota/mobility/toyota-brand/emblem_001.jpg",
-    founded: 1937,
-    country: "Japão"
-  },
-  "bmw": {
-    name: "BMW",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg",
-    description: "A marca alemã de luxo conhecida por seu desempenho e inovação tecnológica.",
-    founded: 1916,
-    country: "Alemanha"
-  },
-  "mercedes": {
-    name: "Mercedes-Benz",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg",
-    description: "Pioneira na indústria automotiva, símbolo de luxo e sofisticação.",
-    founded: 1926,
-    country: "Alemanha"
-  }
-};
-
 export default function CarModelPage() {
   const { brandName } = useParams();
   const [models, setModels] = useState([]);
@@ -104,15 +101,27 @@ export default function CarModelPage() {
   }, []);
 
   useEffect(() => {
+    // Rolar para o topo quando a marca mudar
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [brandName]);
+
+  useEffect(() => {
     // Simular carregamento de dados
     setTimeout(() => {
       const modelsData = generateModelsFromBrands();
       const brandData = modelsData[brandName] || [];
-      const info = BRAND_INFO[brandName] || {
+      
+      // Buscar informações da marca diretamente do CAR_BRANDS
+      const foundBrand = CAR_BRANDS.find(brand => 
+        brand.name.toLowerCase() === brandName.toLowerCase()
+      );
+
+      const info = foundBrand || {
         name: brandName.charAt(0).toUpperCase() + brandName.slice(1),
-        description: `Conheça os modelos da marca ${brandName}`,
         founded: 1900,
-        country: "Internacional"
+        country: "Internacional",
+        logo: "",
+        models: []
       };
 
       setModels(brandData);
@@ -138,6 +147,27 @@ export default function CarModelPage() {
 
   // Categorias únicas
   const categories = ["all", ...new Set(models.map(model => model.category))];
+
+  // Função para tratar erro de imagem
+  const handleImageError = (e, modelName) => {
+    console.warn(`Erro ao carregar imagem para ${modelName}`);
+    e.target.src = 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=400&h=300&fit=crop';
+    e.target.alt = `Imagem padrão para ${modelName}`;
+  };
+
+  // Função para navegação do modelo
+  const handleModelClick = (model) => {
+    // Salvar estado no sessionStorage para recuperar depois
+    sessionStorage.setItem('lastViewedBrand', brandName);
+    
+    navigate(`/modelo/${model.name}`, {
+      state: { 
+        model,
+        brand: brandInfo,
+        returnUrl: `/marcas/${brandName}`
+      }
+    });
+  };
 
   if (loading) {
     return (
@@ -206,6 +236,9 @@ export default function CarModelPage() {
                   alt={`Logo ${brandInfo.name}`}
                   className="img-fluid"
                   style={{ maxHeight: '150px' }}
+                  onError={(e) => {
+                    e.target.src = 'https://via.placeholder.com/150x150/333333/FFFFFF?text=LOGO';
+                  }}
                 />
               )}
             </div>
@@ -268,17 +301,14 @@ export default function CarModelPage() {
                   placeholder="Buscar modelos..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  aria-label="Buscar modelos"
                 />
               </div>
             </div>
-
-            
           </div>
         </div>
 
-
         {/* Lista de Modelos */}
-
         <div className="container position-relative">
           <div className="row ">
             <div className="col-12 ">
@@ -307,25 +337,27 @@ export default function CarModelPage() {
             <div className="row g-4">
               {filteredModels.map(model => (
                 <div key={model.id} className="col-xl-4 col-lg-6 col-md-6">
-                  <div className="card h-100 " style={{
-                    background: '#2f3c4e3e',
-                    backdropFilter: 'blur(10px)',
-                    boxShadow: '2px 5px 5px #26252f '
-                  }}
-                    onClick={(e) => {
-                      //    console.log(model.name)
-                      navigate("/modelo/" + model.name)
+                  <div 
+                    className="card h-100" 
+                    style={{
+                      background: '#2f3c4e3e',
+                      backdropFilter: 'blur(10px)',
+                      boxShadow: '2px 5px 5px #26252f',
+                      cursor: 'pointer'
                     }}
+                    onClick={() => handleModelClick(model)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyPress={(e) => e.key === 'Enter' && handleModelClick(model)}
                   >
                     <div className="position-relative">
                       <img
                         src={model.image}
-                        alt={model.name}
+                        alt={`${model.name} - ${model.category}`}
                         className="card-img-top"
                         style={{ height: '200px', objectFit: 'cover' }}
-                        onError={(e) => {
-                          e.target.src = 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=400&h=300&fit=crop';
-                        }}
+                        onError={(e) => handleImageError(e, model.name)}
+                        loading="lazy"
                       />
                       <div className="position-absolute top-0 end-0 m-3">
                         <span className="badge bg-danger">{model.category}</span>
@@ -340,9 +372,9 @@ export default function CarModelPage() {
                           {model.category}
                         </div>
                         <div className="d-flex justify-content-between align-items-center">
-                          <button className="btn btn-primary btn-sm">
+                          <span className="btn btn-primary btn-sm">
                             Ver peças <FaArrowRight className="ms-2" />
-                          </button>
+                          </span>
                         </div>
                       </div>
                     </div>
