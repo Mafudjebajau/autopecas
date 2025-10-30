@@ -684,18 +684,7 @@ export const Header = () => {
                 animation: isMenuOpen && isMobileView ? 'slideInFromLeft 0.4s ease-out 0.5s both' : 'none'
               }}
             >
-              <a
-                className="nav-link small d-flex align-items-center gap-2"
-                href="#contact"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigation("/#contact");
-                }}
-                style={{ color: colors.dropdown.text }}
-              >
-                <FaEnvelope size={14} />
-                Contacto
-              </a>
+             
             </li>
           </ul>
         </div>

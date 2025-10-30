@@ -65,6 +65,9 @@ export const Footer = () => {
           <small>
             © {new Date().getFullYear()} AutoPeças e-trading. Todos os direitos reservados.
           </small>
+          <br />
+          <hr />
+          <small>Desenvolvido pela <b className="text-primary fw-bold h3">49Legacy</b>&<b className="text-light fw-bold h3">Naufrag0s</b> </small>
         </div>
       </div>
     </footer>
