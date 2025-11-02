@@ -6,47 +6,69 @@ import { Footer } from "../components/Footer";
 import Loader from "../components/Loading_Component";
 
 // Dados das marcas exatamente no padrão fornecido
-const CAR_BRANDS = [
-  {
-    "id": 1,
-    "name": "Toyota",
-    "logo": "https://global.toyota/pages/global_toyota/mobility/toyota-brand/emblem_001.jpg",
-    "models": ["Corolla", "Hilux", "Yaris"],
-    "founded":1980,
-    "country": "Japan"
-  },
-  {
-    "id": 2,
-    "name": "BMW",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg",
-    "models": ["X5", "M3", "i8"],
-    "founded":1980,
-    "country": "Germany"
-  },
-  {
-    "id": 3,
-    "name": "Mercedes",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg",
-    "models": ["C-Class", "E-Class", "S-Class"],
-    "founded":1980,
-    "country": "Germany"
-  },
-];
-const formattedData = CAR_BRANDS.map(item => ({
-  id: item.id,
-  name: item.name,
-  logo: item.logo,
-  models: item.models
-}));
-console.log(formattedData.map(item => item.name))
+// const CAR_BRANDS = [
+//   {
+//     "id": 1,
+//     "name": "Toyota",
+//     "logo": "https://global.toyota/pages/global_toyota/mobility/toyota-brand/emblem_001.jpg",
+//     "models": ["Corolla", "Hilux", "Yaris"],
+//     "founded":1980,
+//     "country": "Japan"
+//   },
+//   {
+//     "id": 2,
+//     "name": "BMW",
+//     "logo": "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg",
+//     "models": ["X5", "M3", "i8"],
+//     "founded":1980,
+//     "country": "Germany"
+//   },
+//   {
+//     "id": 3,
+//     "name": "Mercedes",
+//     "logo": "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg",
+//     "models": ["C-Class", "E-Class", "S-Class"],
+//     "founded":1980,
+//     "country": "Germany"
+//   },
+// ];
+
+
+
 export default function BrandsPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredBrands, setFilteredBrands] = useState(CAR_BRANDS);
   const [loading, setLoading] = useState(true);
   const [isMobileView, setIsMobileView] = useState(false);
-
+  const [CAR_BRANDS, setCAR_BRANDS] = useState([]); // Fixed variable name
+  const [filteredBrands, setFilteredBrands] = useState(CAR_BRANDS);
 
   useEffect(() => {
+    async function carregarDados() {
+      try {
+        setLoading(true);
+        const response = await fetch('http://192.168.1.139:8000/brand/');
+
+        if (!response.ok) {
+          throw new Error('Erro ao carregar marcas');
+        }
+
+        const data = await response.json();
+        console.log(data)
+        setCAR_BRANDS(data);
+      } catch (error) {
+        console.error("Erro ao carregar marcas:", error);
+        // You could set some fallback data here if needed
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    carregarDados();
+    console.log(CAR_BRANDS);
+  }, []);
+
+  useEffect(() => {
+    
     // Simular carregamento
     setTimeout(() => {
       setLoading(false);
@@ -232,7 +254,7 @@ export default function BrandsPage() {
             </div>}
           </div>
 
-          {filteredBrands.length === 0 ? (
+          {CAR_BRANDS.length === 0 ? (
             <div className="text-center py-5">
               <FaCar size={64} className="text-secondary mb-3" />
               <h3>Nenhuma marca encontrada</h3>
@@ -248,7 +270,7 @@ export default function BrandsPage() {
             </div>
           ) : (
             <div className="row g-4">
-              {filteredBrands.map(brand => (
+              {CAR_BRANDS.map(brand => (
                 <div key={brand.id} className="col-xl-4 col-lg-6 col-md-6">
                   <Link
                     to={`/marcas/${brand.name.toLowerCase()}`}

@@ -14,30 +14,30 @@ export const BrandsSection = React.memo(() => {
     async function carregarDados() {
       try {
         setLoading(true);
-        // const response = await fetch('http://192.168.1.131:8000/brand/');
+        const response = await fetch('http://192.168.1.139:8000/brand/');
         
-        // if (!response.ok) {
-        //   throw new Error('Erro ao carregar marcas');
-        // }
-        
-        // const data = await response.json();
-        // const formattedData = data.map(item => ({
-        //   id: item.id,
-        //   name: item.name,
-        //   logo: item.logo || toyotalogo, // Use the imported toyotalogo
-        // }));
-        const formattedData = [
-        {
-          id: 1,
-          name: "toyota",
-          logo: "/src/assets/toyota-logo-600.png"
-        },
-         {
-          id: 2,
-          name: "mercedes",
-          logo: "/src/assets/mercedes-logo-600.png"
+        if (!response.ok) {
+          throw new Error('Erro ao carregar marcas');
         }
-        ]
+        
+        const data = await response.json();
+        const formattedData = data.map(item => ({
+          id: item.id,
+          name: item.name,
+          logo: item.logo || toyotalogo, // Use the imported toyotalogo
+        }));
+        // const formattedData = [
+        // {
+        //   id: 1,
+        //   name: "toyota",
+        //   logo: "/src/assets/toyota-logo-600.png"
+        // },
+        //  {
+        //   id: 2,
+        //   name: "mercedes",
+        //   logo: "/src/assets/mercedes-logo-600.png"
+        // }
+        // ]
         setCAR_BRANDS(formattedData);
         console.log("Marcas carregadas da API:", formattedData);
       } catch (error) {

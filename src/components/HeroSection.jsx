@@ -1,7 +1,7 @@
 import React from "react";
 import { FaCheck, FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import heroCarWebP from "../assets/teste2.png";
+import heroCarWebP from "../assets/teste_2.png";
 
 
 export const Hero = React.memo(() => {

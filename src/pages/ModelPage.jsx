@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useCallback } from "react";
+import React, { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
     FaArrowLeft,
@@ -26,13 +26,13 @@ import { FaFilter } from "react-icons/fa6";
 const CATEGORIES = [
     { id: 'all', name: 'Todas as Peças', icon: <FaCar size={20} />, color: '#3b82f6' },
     { id: 'motor', name: 'Motor', icon: <FaCog size={20} />, color: '#dc3545' },
-     { id: 'filtros', name: 'Filtros', icon: <FaFilter size={20} />, color: '#494e58ff' },
-    { id: 'farois', name: 'farois', icon: <FaLightbulb size={20} />, color: '#ffc107' },
+    { id: 'filtros', name: 'Filtros', icon: <FaFilter size={20} />, color: '#494e58ff' },
+    { id: 'farois', name: 'Faróis', icon: <FaLightbulb size={20} />, color: '#ffc107' },
     { id: 'interior', name: 'Interior', icon: <FaChair size={20} />, color: '#28a745' },
     { id: 'suspensao', name: 'Suspensão', icon: <FaShieldAlt size={20} />, color: '#6f42c1' },
-    { id: 'travoes', name: 'Travoes', icon: <FaTachometerAlt size={20} />, color: '#fd7e14' },
+    { id: 'travoes', name: 'Travões', icon: <FaTachometerAlt size={20} />, color: '#fd7e14' },
     { id: 'eletrica', name: 'Elétrica', icon: <FaBolt size={20} />, color: '#20c997' },
-    { id: 'acessorios', name: 'Acessórios univesais', icon: <FaMusic size={20} />, color: '#e83e8c' }
+    { id: 'acessorios', name: 'Acessórios universais', icon: <FaMusic size={20} />, color: '#e83e8c' }
 ];
 
 // Imagens reais dos modelos de carro
@@ -48,283 +48,6 @@ const CAR_MODEL_IMAGES = {
     "S-Class": "https://images.unsplash.com/photo-1563720223180-4512f66a0f23?w=600&h=400&fit=crop"
 };
 
-// Informações adicionais sobre os modelos
-const MODEL_INFO = {
-    "Corolla": {
-        brand: "Toyota",
-        year: "2024",
-    },
-    "Hilux": {
-        brand: "Toyota", 
-        year: "2024",
-        description: "Picape robusta e versátil para trabalho e aventura"
-    },
-    "Yaris": {
-        brand: "Toyota",
-        year: "2024",
-        description: "Hatch compacto com excelente consumo de combustível"
-    },
-    "X5": {
-        brand: "BMW",
-        year: "2024",
-        description: "SUV de luxo com performance e tecnologia avançada"
-    },
-    "M3": {
-        brand: "BMW",
-        year: "2024", 
-        description: "Sedã esportivo de alta performance da série M"
-    },
-    "i8": {
-        brand: "BMW",
-        year: "2024",
-        description: "Híbrido esportivo com design futurista e tecnologia"
-    },
-    "C-Class": {
-        brand: "Mercedes-Benz",
-        year: "2024",
-        description: "Sedã executivo que combina luxo e esportividade"
-    },
-    "E-Class": {
-        brand: "Mercedes-Benz",
-        year: "2024",
-        description: "Sedã de luxo com tecnologia de ponta e conforto superior"
-    },
-    "S-Class": {
-        brand: "Mercedes-Benz", 
-        year: "2024",
-        description: "Topo de linha com o que há de mais avançado em luxo automotivo"
-    }
-};
-
-// Datos de exemplo para peças por modelo con categorías (sem price)
-const MODEL_PARTS = {
-    "Corolla": [
-        {
-            id: 1,
-            brand: "Toyota",
-            image: noimg,
-            name: "Filtro de Óleo Corolla 2020",
-            category: 'motor',
-            disponivel: true
-        },
-        {
-            id: 2,
-            brand: "Toyota",
-            image: noimg,
-            name: "Pastilha de Freio Dianteira",
-            category: 'freios',
-            disponivel: true
-        },
-        {
-            id: 3,
-            brand: "Toyota",
-            image: noimg,
-            name: "Kit Correia Dentada",
-            category: 'motor',
-            disponivel: false
-        },
-        {
-            id: 16,
-            brand: "Toyota",
-            image: noimg,
-            name: "Farol Dianteiro Esquerdo",
-            category: 'farois',
-            disponivel: true
-        },
-        {
-            id: 17,
-            brand: "Toyota",
-            image: noimg,
-            name: "Banco do Motorista",
-            category: 'interior',
-            disponivel: true
-        },
-        {
-            id: 18,
-            brand: "Toyota",
-            image: noimg,
-            name: "Amortecedor Dianteiro",
-            category: 'suspensao',
-            disponivel: true
-        },
-    ],
-    "Hilux": [
-        {
-            id: 4,
-            brand: "Toyota",
-            image: noimg,
-            name: "Amortecedor Hilux 4x4",
-            category: 'suspensao',
-            disponivel: true
-        },
-        {
-            id: 5,
-            brand: "Toyota",
-            image: noimg,
-            name: "Filtro de Combustível",
-            category: 'filtros',
-            disponivel: true
-        },
-        {
-            id: 19,
-            brand: "Toyota",
-            image: noimg,
-            name: "Lanterna Traseira",
-            category: 'farois',
-            disponivel: true
-        },
-    ],
-    "Yaris": [
-        {
-            id: 6,
-            brand: "Toyota",
-            image: noimg,
-            name: "Velas de Ignição Yaris",
-            category: 'motor',
-            disponivel: true
-        },
-        {
-            id: 7,
-            brand: "Toyota",
-            image: noimg,
-            name: "Filtro de Ar",
-            category: 'motor',
-            disponivel: true
-        },
-        {
-            id: 20,
-            brand: "Toyota",
-            image: noimg,
-            name: "Rádio Multimídia",
-            category: 'acessorios',
-            disponivel: true
-        },
-    ],
-    "X5": [
-        {
-            id: 8,
-            brand: "BMW",
-            image: noimg,
-            name: "Sensor ABS X5",
-            category: 'freios',
-            disponivel: true
-        },
-        {
-            id: 9,
-            brand: "BMW",
-            image: noimg,
-            name: "Disco de Freio",
-            category: 'freios',
-            disponivel: false
-        },
-        {
-            id: 21,
-            brand: "BMW",
-            image: noimg,
-            name: "Xenon Farol Dianteiro",
-            category: 'farois',
-            disponivel: true
-        },
-    ],
-    "M3": [
-        {
-            id: 10,
-            brand: "BMW",
-            image: noimg,
-            name: "Embreagem Esportiva M3",
-            category: 'motor',
-            disponivel: true
-        },
-        {
-            id: 22,
-            brand: "BMW",
-            image: noimg,
-            name: "Volante Esportivo",
-            category: 'interior',
-            disponivel: true
-        },
-    ],
-    "i8": [
-        {
-            id: 11,
-            brand: "BMW",
-            image: noimg,
-            name: "Bateria Híbrida i8",
-            category: 'eletrica',
-            disponivel: false
-        },
-        {
-            id: 23,
-            brand: "BMW",
-            image: noimg,
-            name: "LED de Daytime",
-            category: 'farois',
-            disponivel: true
-        },
-    ],
-    "C-Class": [
-        {
-            id: 12,
-            brand: "Mercedes",
-            image: noimg,
-            name: "Radiador C-Class",
-            category: 'motor',
-            disponivel: true
-        },
-        {
-            id: 13,
-            brand: "Mercedes",
-            image: noimg,
-            name: "Farol Dianteiro",
-            category: 'farois',
-            disponivel: true
-        },
-        {
-            id: 24,
-            brand: "Mercedes",
-            image: noimg,
-            name: "Tela Central",
-            category: 'interior',
-            disponivel: true
-        },
-    ],
-    "E-Class": [
-        {
-            id: 14,
-            brand: "Mercedes",
-            image: noimg,
-            name: "Suspensão Aérea",
-            category: 'suspensao',
-            disponivel: false
-        },
-        {
-            id: 25,
-            brand: "Mercedes",
-            image: noimg,
-            name: "Bancos de Couro",
-            category: 'interior',
-            disponivel: true
-        },
-    ],
-    "S-Class": [
-        {
-            id: 15,
-            brand: "Mercedes",
-            image: noimg,
-            name: "Display Central S-Class",
-            category: 'interior',
-            disponivel: true
-        },
-        {
-            id: 26,
-            brand: "Mercedes",
-            image: noimg,
-            name: "Motor V8",
-            category: 'motor',
-            disponivel: false
-        },
-    ]
-};
 
 const PartCard = ({ part, onAdd }) => (
     <div className="card h-100 border-0 part-card" style={{
@@ -333,36 +56,38 @@ const PartCard = ({ part, onAdd }) => (
         boxShadow: '2px 5px 5px #26252f'
     }}>
         <div className="position-relative">
-            <img 
-                src={part.image || noimg} 
-                alt={part.name} 
-                className="card-img-top" 
-                style={{ 
-                    height: '180px', 
+            <img
+                src={part.image || noimg}
+                alt={part.name}
+                className="card-img-top"
+                style={{
+                    height: '180px',
                     objectFit: 'contain',
                     padding: '1rem'
-                }} 
-                loading="lazy" 
+                }}
+                loading="lazy"
             />
             <div className="position-absolute top-0 end-0 m-2">
-                <span className={`badge ${part.disponivel ? "bg-success" : "bg-danger"}`}>
-                    {part.disponivel ? "Em estoque" : "Sob encomenda"}
+                {/* CORREÇÃO: Usar available em vez de disponivel */}
+                <span className={`badge ${part.available ? "bg-success" : "bg-danger"}`}>
+                    {part.available ? "Em estoque" : "Sob encomenda"}
                 </span>
             </div>
         </div>
-        
+
         <div className="card-body d-flex flex-column text-light">
             <h6 className="card-title fw-bold mb-2">{part.name}</h6>
-            <p className="text-secondary small mb-3">{part.brand}</p>
-            
+            <p className="text-secondary small mb-3">{sessionStorage.getItem("LastViewedBrand")}</p>
+
             <div className="mt-auto">
                 <button
                     className="btn btn-sm w-100"
                     onClick={() => onAdd(part)}
-                    disabled={!part.disponivel}
+                    // CORREÇÃO: Corrigido availablel para available
+                    disabled={!part.available}
                     style={{
-                        background: part.disponivel 
-                            ? 'linear-gradient(45deg, #10192b, #1d3557ff, #3a5f9bff)' 
+                        background: part.available
+                            ? 'linear-gradient(45deg, #10192b, #1d3557ff, #3a5f9bff)'
                             : '#6c757d',
                         color: 'white',
                         border: 'none',
@@ -370,7 +95,7 @@ const PartCard = ({ part, onAdd }) => (
                         padding: '0.5rem 1rem'
                     }}
                 >
-                    {part.disponivel ? "Adicionar ao Carrinho" : "Consultar disponibilidade"}
+                    {part.available ? "Adicionar ao Carrinho" : "Consultar disponibilidade"}
                 </button>
             </div>
         </div>
@@ -379,12 +104,12 @@ const PartCard = ({ part, onAdd }) => (
 
 const CategoryCard = ({ category, isSelected, onClick, count }) => (
     <div
-        className={`card h-100 text-center border-0 category-card ${isSelected ? 'selected' : ''}`}
+        className={`card  h-100 text-center border-0 category-card ${isSelected ? 'selected' : ''}`}
         style={{
             cursor: 'pointer',
             transition: 'all 0.3s ease',
-            background: isSelected 
-                ? 'linear-gradient(45deg, #10192b, #1d3557ff, #3a5f9bff)' 
+            background: isSelected
+                ? 'linear-gradient(45deg, #10192b, #1d3557ff, #3a5f9bff)'
                 : '#2f3c4e3e',
             backdropFilter: 'blur(10px)',
             boxShadow: '2px 5px 5px #26252f',
@@ -392,24 +117,13 @@ const CategoryCard = ({ category, isSelected, onClick, count }) => (
         }}
         onClick={onClick}
     >
-        <div className="card-body d-flex flex-column justify-content-center align-items-center p-3">
-            <div
-                className="rounded-circle d-flex align-items-center justify-content-center mb-3"
-                style={{
-                    width: '60px',
-                    height: '60px',
-                    backgroundColor: isSelected ? 'rgba(255,255,255,0.1)' : category.color + '20',
-                    color: isSelected ? 'white' : category.color,
-                    transition: 'all 0.3s ease'
-                }}
-            >
-                {category.icon}
-            </div>
-            <h6 className="fw-semibold mb-2 text-light" style={{ fontSize: '0.85rem' }}>
+        <div className="card-body d-flex flex-row justify-content-between align-items-center p-3">
+
+            <h6 className="fw-semibold mb-2 text-light " style={{ fontSize: '0.75rem' }}>
                 {category.name}
             </h6>
-            <span 
-                className={`badge ${count < 1 ? 'bg-danger' : isSelected ? 'bg-light text-dark' : 'bg-light text-dark'}`}
+            <span
+                className={`badge ${count < 1 ? 'bg-danger' : 'bg-success text-light'}`}
                 style={{ fontSize: '0.75rem' }}
             >
                 {count}
@@ -426,16 +140,44 @@ export default function ModelPage() {
     const [query, setQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState('all');
     const debounceRef = useRef(null);
+    const [modelParts, setModelParts] = useState([]);
+    // const [MODEL_INFO, setModelInfo] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const handleSearch = useCallback((value) => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
         debounceRef.current = setTimeout(() => setQuery(value), 220);
     }, []);
 
-    const parts = useMemo(() => {
-        const modelParts = MODEL_PARTS[modelName] || [];
+    useEffect(() => {
+        async function carregarDados() {
+            try {
+                setLoading(true);
+                const response = await fetch(`http://192.168.1.139:8000/model/${modelName}/part`);
 
-        let filteredParts = modelParts;
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar peças');
+                }
+
+
+                const data = await response.json();
+                setModelParts(data || []);
+                // console.log("Peças carregadas da API:", data);
+            } catch (error) {
+                console.error("Erro ao carregar peças:", error);
+                setModelParts([]);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        carregarDados();
+    }, [modelName]);
+
+   
+
+    const parts = useMemo(() => {
+        let filteredParts = Array.isArray(modelParts) ? modelParts : [];
 
         // Filtrar por categoría
         if (selectedCategory !== 'all') {
@@ -446,20 +188,25 @@ export default function ModelPage() {
         if (query) {
             const normalizedQuery = query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             filteredParts = filteredParts.filter(part =>
-                part.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(normalizedQuery) ||
-                part.brand.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(normalizedQuery)
+                part.name?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(normalizedQuery) ||
+                part.brand?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(normalizedQuery)
             );
         }
 
         return filteredParts;
-    }, [modelName, query, selectedCategory]);
+    }, [modelParts, query, selectedCategory]);
 
+    // CORREÇÃO: Alterado para usar available em vez de disponivel
     const adicionarCarrinho = (produto) => {
-        if (produto.disponivel) {
-            setCarrinho((prev) => [...prev, produto]);
-            setShowCart(true);
-        }
+        if (!produto.available) return;
+
+        setCarrinho((prev) => {
+            const novoCarrinho = [...prev, produto];
+            localStorage.setItem("setCarrinho", JSON.stringify(novoCarrinho));
+            return novoCarrinho;
+        });
     };
+
 
     const removerProduto = (id) => {
         setCarrinho((prev) => prev.filter((p) => p.id !== id));
@@ -468,7 +215,7 @@ export default function ModelPage() {
     const enviarPedido = () => {
         if (carrinho.length === 0) return;
 
-        const lista = carrinho.map((item, index) => 
+        const lista = carrinho.map((item, index) =>
             `${index + 1}. ${item.name} - ${item.brand}`
         ).join('\n');
 
@@ -476,23 +223,47 @@ export default function ModelPage() {
     };
 
     const getCategoryCount = (categoryId) => {
-        const modelParts = MODEL_PARTS[modelName] || [];
         if (categoryId === 'all') return modelParts.length;
         return modelParts.filter(part => part.category === categoryId).length;
     };
 
-    const modelInfo = MODEL_INFO[modelName] || {
-        brand: modelName,
-        year: "2024",
-        description: `Modelo ${modelName} - Peças originais e compatíveis`
+    const handleCategoryClick = (categoryId) => {
+        setSelectedCategory(categoryId);
+        setTimeout(() => {
+            window.scrollTo({
+                top: window.scrollY + 400,
+                behavior: 'smooth'
+            });
+        }, 100);
     };
 
+   
     const carImage = CAR_MODEL_IMAGES[modelName] || "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&h=400&fit=crop";
+
+    // CORREÇÃO: Atualizado para usar available
+    const pecasEmEstoque = modelParts.filter(p => p.available).length;
+
+    // Show loading state
+    if (loading) {
+        return (
+            <>
+                <Header />
+                <section className="min-vh-100 bg-dark d-flex justify-content-center align-items-center">
+                    <div className="text-center text-white">
+                        <div className="spinner-border text-primary mb-3" role="status">
+                            <span className="visually-hidden">Carregando...</span>
+                        </div>
+                        <p>Carregando peças para {modelName}...</p>
+                    </div>
+                </section>
+            </>
+        );
+    }
 
     return (
         <>
             <Header />
-            
+
             {/* Hero Section */}
             <section className="text-white py-5" style={{
                 background: "linear-gradient(45deg, #10192b, #1d3557ff, #3a5f9bff)",
@@ -500,7 +271,7 @@ export default function ModelPage() {
                 <div className="container pt-5">
                     <div className="row align-items-center">
                         <div className="col-lg-8">
-                            <button 
+                            <button
                                 className="btn btn-outline-light btn-sm mb-4"
                                 onClick={() => navigate("/marcas")}
                             >
@@ -511,24 +282,19 @@ export default function ModelPage() {
                                 Peças para <span className="text-primary">{modelName}</span>
                             </h1>
                             <p className="lead mb-4 fs-5">
-                                {modelInfo.description}
+                                {`Encontre as melhores peças para o seu ${modelName}. Peças originais e compatíveis com garantia de qualidade.`}
                             </p>
                             <div className="row text-center">
                                 <div className="col-4">
                                     <div className="text-primary fw-bold fs-3">
-                                        {MODEL_PARTS[modelName]?.length || 0}
+                                        {CATEGORIES.filter(cat => getCategoryCount(cat.id) > 0).length}
                                     </div>
                                     <div className="text-light small">Peças Disponíveis</div>
                                 </div>
                                 <div className="col-4">
+                                    {/* CORREÇÃO: Usar pecasEmEstoque */}
                                     <div className="text-primary fw-bold fs-3">
-                                        {MODEL_PARTS[modelName]?.filter(p => p.disponivel).length || 0}
-                                    </div>
-                                    <div className="text-light small">Em Estoque</div>
-                                </div>
-                                <div className="col-4">
-                                    <div className="text-primary fw-bold fs-3">
-                                        {CATEGORIES.filter(cat => getCategoryCount(cat.id) > 0).length}
+                                        {pecasEmEstoque}
                                     </div>
                                     <div className="text-light small">Categorias</div>
                                 </div>
@@ -536,7 +302,7 @@ export default function ModelPage() {
                         </div>
                         <div className="col-lg-4 text-center">
                             <div className="position-relative">
-                                <div 
+                                <div
                                     className="rounded-circle mx-auto"
                                     style={{
                                         width: '250px',
@@ -550,19 +316,20 @@ export default function ModelPage() {
                                         overflow: 'hidden'
                                     }}
                                 >
-                                    <img 
-                                        src={carImage}
+                                    {/* <img
+                                        src={<FaCar />}
                                         alt={modelName}
                                         className="rounded-circle img-fluid"
+                                        onError={(e) => {
+                                            e.target.src = 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&h=400&fit=crop';
+                                        }}
+                                    /> */}
+                                <FaCar color="lightblue" className="rounded-circle img-fluid"
                                         style={{
                                             width: '100%',
                                             height: '100%',
                                             objectFit: 'cover'
-                                        }}
-                                        onError={(e) => {
-                                            e.target.src = 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&h=400&fit=crop';
-                                        }}
-                                    />
+                                        }}/>
                                 </div>
                             </div>
                         </div>
@@ -626,8 +393,7 @@ export default function ModelPage() {
                                 <CategoryCard
                                     category={category}
                                     isSelected={selectedCategory === category.id}
-                                    onClick={() => {setSelectedCategory(category.id); scrollTo(0,
-                                        parseFloat(document.body.scrollHeight - document.body.scrollHeight * 70/100),)}}
+                                    onClick={() => handleCategoryClick(category.id)}
                                     count={getCategoryCount(category.id)}
                                 />
                             </div>
@@ -686,8 +452,7 @@ export default function ModelPage() {
                 </div>
             </section>
 
-
-            {/* Botón flotante del carrito */}
+            {/* Botón flotante del carrito - CORRIGIDO */}
             {carrinho.length > 0 && (
                 <button
                     className="btn position-fixed"
@@ -720,8 +485,8 @@ export default function ModelPage() {
             {/* Carrinho Sidebar */}
             {showCart && (
                 <div className="position-fixed top-0 start-0 w-100 h-100" style={{ zIndex: 2050, background: "rgba(0,0,0,0.5)" }} onClick={() => setShowCart(false)}>
-                    <div className="position-absolute top-0 end-0 h-100 p-4" style={{ 
-                        width: "350px", 
+                    <div className="position-absolute top-0 end-0 h-100 p-4" style={{
+                        width: "350px",
                         overflow: "auto",
                         background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
                         color: 'white'
