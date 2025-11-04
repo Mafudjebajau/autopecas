@@ -46,7 +46,7 @@ export default function BrandsPage() {
     async function carregarDados() {
       try {
         setLoading(true);
-        const response = await fetch('http://192.168.1.139:8000/brand/');
+        const response = await fetch(import.meta.env.VITE_API_URL+'/brand/');
 
         if (!response.ok) {
           throw new Error('Erro ao carregar marcas');

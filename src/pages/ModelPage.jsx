@@ -3,12 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
     FaArrowLeft,
     FaShoppingCart,
-    FaCog,
     FaCar,
     FaLightbulb,
     FaChair,
     FaTools,
-    FaOilCan,
     FaTachometerAlt,
     FaMusic,
     FaShieldAlt,
@@ -21,18 +19,27 @@ import noimg from "../assets/noimg.png";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { FaFilter } from "react-icons/fa6";
+import engineIcon from "../assets/icons/engine.svg";
+import suspensionIcon from "../assets/icons/suspension.svg";
+import brakesIcon from "../assets/icons/break.svg";
+import CarLight from "../assets/icons/car-light.svg";
+import battery from "../assets/icons/battery.svg";
+import seatIcon from "../assets/icons/seat.svg";
+import OilFilter from "../assets/icons/oil-filter.svg";
+import TodasCategory from "../assets/icons/todas.svg";
 
-// Categorías con íconos
+
+// Categorías com ícones
 const CATEGORIES = [
-    { id: 'all', name: 'Todas as Peças', icon: <FaCar size={20} />, color: '#3b82f6' },
-    { id: 'motor', name: 'Motor', icon: <FaCog size={20} />, color: '#dc3545' },
-    { id: 'filtros', name: 'Filtros', icon: <FaFilter size={20} />, color: '#494e58ff' },
-    { id: 'farois', name: 'Faróis', icon: <FaLightbulb size={20} />, color: '#ffc107' },
-    { id: 'interior', name: 'Interior', icon: <FaChair size={20} />, color: '#28a745' },
-    { id: 'suspensao', name: 'Suspensão', icon: <FaShieldAlt size={20} />, color: '#6f42c1' },
-    { id: 'travoes', name: 'Travões', icon: <FaTachometerAlt size={20} />, color: '#fd7e14' },
-    { id: 'eletrica', name: 'Elétrica', icon: <FaBolt size={20} />, color: '#20c997' },
-    { id: 'acessorios', name: 'Acessórios universais', icon: <FaMusic size={20} />, color: '#e83e8c' }
+    { id: 'all', name: 'Todas as Peças', icon:<img src={TodasCategory} width={40} height={40} style={{transform:"rotate(90deg)"}}/> , color: '#3b82f6' },
+    { id: 'motor', name: 'Motor', icon: <img src={engineIcon} alt="Motor" width={40} height={40}  />, color: '#dc3545' },
+    { id: 'filtros', name: 'Filtros', icon: <img src={OilFilter} alt="Motor" width={40} height={40}  />, color: '#494e58ff' },
+    { id: 'farois', name: 'Faróis', icon: <img src={CarLight} alt="Motor" width={40} height={40}  />, color: '#ffc107' },
+    { id: 'interior', name: 'Interior', icon:<img src={seatIcon} alt="Motor" width={40} height={40}  />, color: '#28a745' },
+    { id: 'suspensao', name: 'Suspensão', icon: <img src={suspensionIcon} alt="Motor" width={40} height={40}  />, color: '#6f42c1' },
+    { id: 'travoes', name: 'Travões', icon: <img src={brakesIcon} alt="Motor" width={40} height={40}  />, color: '#fd7e14' },
+    { id: 'eletrica', name: 'Elétrica', icon:<img src={battery} alt="Motor" width={40} height={40}  />, color: '#20c997' }
+   
 ];
 
 // Imagens reais dos modelos de carro
@@ -47,7 +54,6 @@ const CAR_MODEL_IMAGES = {
     "E-Class": "https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=600&h=400&fit=crop",
     "S-Class": "https://images.unsplash.com/photo-1563720223180-4512f66a0f23?w=600&h=400&fit=crop"
 };
-
 
 const PartCard = ({ part, onAdd }) => (
     <div className="card h-100 border-0 part-card" style={{
@@ -68,7 +74,6 @@ const PartCard = ({ part, onAdd }) => (
                 loading="lazy"
             />
             <div className="position-absolute top-0 end-0 m-2">
-                {/* CORREÇÃO: Usar available em vez de disponivel */}
                 <span className={`badge ${part.available ? "bg-success" : "bg-danger"}`}>
                     {part.available ? "Em estoque" : "Sob encomenda"}
                 </span>
@@ -83,7 +88,6 @@ const PartCard = ({ part, onAdd }) => (
                 <button
                     className="btn btn-sm w-100"
                     onClick={() => onAdd(part)}
-                    // CORREÇÃO: Corrigido availablel para available
                     disabled={!part.available}
                     style={{
                         background: part.available
@@ -104,7 +108,7 @@ const PartCard = ({ part, onAdd }) => (
 
 const CategoryCard = ({ category, isSelected, onClick, count }) => (
     <div
-        className={`card  h-100 text-center border-0 category-card ${isSelected ? 'selected' : ''}`}
+        className={`card h-100 text-center border-0 category-card ${isSelected ? 'selected' : ''}`}
         style={{
             cursor: 'pointer',
             transition: 'all 0.3s ease',
@@ -117,9 +121,11 @@ const CategoryCard = ({ category, isSelected, onClick, count }) => (
         }}
         onClick={onClick}
     >
-        <div className="card-body d-flex flex-row justify-content-between align-items-center p-3">
-
-            <h6 className="fw-semibold mb-2 text-light " style={{ fontSize: '0.75rem' }}>
+        <div className="card-body d-flex flex-column justify-content-between align-items-center ">
+            <div className="mb-2">
+                {category.icon}
+            </div>
+            <h6 className="fw-semibold mb-2 text-light text-center" style={{ fontSize: '0.75rem' }}>
                 {category.name}
             </h6>
             <span
@@ -141,8 +147,15 @@ export default function ModelPage() {
     const [selectedCategory, setSelectedCategory] = useState('all');
     const debounceRef = useRef(null);
     const [modelParts, setModelParts] = useState([]);
-    // const [MODEL_INFO, setModelInfo] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    // Carregar carrinho do localStorage
+    useEffect(() => {
+        const carrinhoSalvo = localStorage.getItem("carrinho");
+        if (carrinhoSalvo) {
+            setCarrinho(JSON.parse(carrinhoSalvo));
+        }
+    }, []);
 
     const handleSearch = useCallback((value) => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -153,16 +166,14 @@ export default function ModelPage() {
         async function carregarDados() {
             try {
                 setLoading(true);
-                const response = await fetch(`http://192.168.1.139:8000/model/${modelName}/part`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/model/${modelName}/part`);
 
                 if (!response.ok) {
                     throw new Error('Erro ao carregar peças');
                 }
 
-
                 const data = await response.json();
                 setModelParts(data || []);
-                // console.log("Peças carregadas da API:", data);
             } catch (error) {
                 console.error("Erro ao carregar peças:", error);
                 setModelParts([]);
@@ -174,17 +185,15 @@ export default function ModelPage() {
         carregarDados();
     }, [modelName]);
 
-   
-
     const parts = useMemo(() => {
         let filteredParts = Array.isArray(modelParts) ? modelParts : [];
 
-        // Filtrar por categoría
+        // Filtrar por categoria
         if (selectedCategory !== 'all') {
             filteredParts = filteredParts.filter(part => part.category === selectedCategory);
         }
 
-        // Filtrar por búsqueda
+        // Filtrar por busca
         if (query) {
             const normalizedQuery = query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             filteredParts = filteredParts.filter(part =>
@@ -196,30 +205,32 @@ export default function ModelPage() {
         return filteredParts;
     }, [modelParts, query, selectedCategory]);
 
-    // CORREÇÃO: Alterado para usar available em vez de disponivel
     const adicionarCarrinho = (produto) => {
         if (!produto.available) return;
 
         setCarrinho((prev) => {
             const novoCarrinho = [...prev, produto];
-            localStorage.setItem("setCarrinho", JSON.stringify(novoCarrinho));
+            localStorage.setItem("carrinho", JSON.stringify(novoCarrinho));
             return novoCarrinho;
         });
     };
 
-
     const removerProduto = (id) => {
-        setCarrinho((prev) => prev.filter((p) => p.id !== id));
+        setCarrinho((prev) => {
+            const novoCarrinho = prev.filter((p) => p.id !== id);
+            localStorage.setItem("carrinho", JSON.stringify(novoCarrinho));
+            return novoCarrinho;
+        });
     };
 
     const enviarPedido = () => {
         if (carrinho.length === 0) return;
 
         const lista = carrinho.map((item, index) =>
-            `${index + 1}. ${item.name} - ${item.brand}`
+            `#${index + 1}:=> ${item.name} -- -- -- -- ${item.brand}`
         ).join('\n');
 
-        window.location.href = `mailto:autopecas@empresa.com?subject=Pedido para ${modelName}&body=Olá, gostaria de fazer o pedido para ${modelName}:\n\n${lista}\n\nTotal de itens: ${carrinho.length}`;
+        window.location.href = `mailto:autopecas@empresa.com?subject=Pedido para peças ${modelName}&body=Olá, gostaria de fazer o pedido para ${modelName}:\n\n${lista}\n\nTotal de itens: ${carrinho.length}`;
     };
 
     const getCategoryCount = (categoryId) => {
@@ -237,11 +248,8 @@ export default function ModelPage() {
         }, 100);
     };
 
-   
-    const carImage = CAR_MODEL_IMAGES[modelName] || "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&h=400&fit=crop";
-
-    // CORREÇÃO: Atualizado para usar available
     const pecasEmEstoque = modelParts.filter(p => p.available).length;
+    const categoriasDisponiveis = CATEGORIES.filter(cat => getCategoryCount(cat.id) > 0).length;
 
     // Show loading state
     if (loading) {
@@ -287,16 +295,21 @@ export default function ModelPage() {
                             <div className="row text-center">
                                 <div className="col-4">
                                     <div className="text-primary fw-bold fs-3">
-                                        {CATEGORIES.filter(cat => getCategoryCount(cat.id) > 0).length}
+                                        {categoriasDisponiveis}
                                     </div>
-                                    <div className="text-light small">Peças Disponíveis</div>
+                                    <div className="text-light small">Categorias</div>
                                 </div>
                                 <div className="col-4">
-                                    {/* CORREÇÃO: Usar pecasEmEstoque */}
                                     <div className="text-primary fw-bold fs-3">
                                         {pecasEmEstoque}
                                     </div>
-                                    <div className="text-light small">Categorias</div>
+                                    <div className="text-light small">Peças em Estoque</div>
+                                </div>
+                                <div className="col-4">
+                                    <div className="text-primary fw-bold fs-3">
+                                        {modelParts.length}
+                                    </div>
+                                    <div className="text-light small">Total de Peças</div>
                                 </div>
                             </div>
                         </div>
@@ -308,7 +321,7 @@ export default function ModelPage() {
                                         width: '250px',
                                         height: '250px',
                                         background: 'linear-gradient(135deg, rgba(11, 245, 245, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)',
-                                        border: '2px solid rgba(255, 255, 255, 0)',
+                                        border: '2px solid rgba(255, 255, 255, 0.1)',
                                         backdropFilter: 'blur(10px)',
                                         display: 'flex',
                                         alignItems: 'center',
@@ -316,20 +329,13 @@ export default function ModelPage() {
                                         overflow: 'hidden'
                                     }}
                                 >
-                                    {/* <img
-                                        src={<FaCar />}
-                                        alt={modelName}
-                                        className="rounded-circle img-fluid"
-                                        onError={(e) => {
-                                            e.target.src = 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&h=400&fit=crop';
-                                        }}
-                                    /> */}
-                                <FaCar color="lightblue" className="rounded-circle img-fluid"
+                                    <FaCar 
+                                        size={80} 
+                                        color="lightblue" 
                                         style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            objectFit: 'cover'
-                                        }}/>
+                                            opacity: 0.8
+                                        }}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -338,7 +344,7 @@ export default function ModelPage() {
             </section>
 
             {/* Busca e Filtros */}
-            <section className="container-fluid h-100 position-relative py-5">
+            <section className="container-fluid position-relative py-5" style={{ minHeight: '100vh' }}>
                 {/* Background com gradiente dinâmico */}
                 <div className="position-absolute top-0 start-0 w-100 h-100">
                     <div
@@ -380,7 +386,7 @@ export default function ModelPage() {
                     </div>
                 </div>
 
-                {/* Categorías */}
+                {/* Categorias */}
                 <div className="container position-relative pt-5 text-light">
                     <div className="row mb-3">
                         <div className="col-12">
@@ -452,7 +458,7 @@ export default function ModelPage() {
                 </div>
             </section>
 
-            {/* Botón flotante del carrito - CORRIGIDO */}
+            {/* Botão flutuante do carrinho */}
             {carrinho.length > 0 && (
                 <button
                     className="btn position-fixed"
@@ -504,8 +510,8 @@ export default function ModelPage() {
                                     <p className="small text-secondary">
                                         {carrinho.length} {carrinho.length === 1 ? 'item' : 'itens'} no carrinho
                                     </p>
-                                    {carrinho.map((item) => (
-                                        <div key={item.id} className="card mb-2 border-0" style={{
+                                    {carrinho.map((item, index) => (
+                                        <div key={`${item.id}-${index}`} className="card mb-2 border-0" style={{
                                             background: '#2f3c4e3e',
                                             backdropFilter: 'blur(10px)'
                                         }}>

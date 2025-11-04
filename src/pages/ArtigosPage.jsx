@@ -14,6 +14,30 @@ export default function ArticlesPage() {
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [showFilters, setShowFilters] = useState(false);
 
+    // Estados para o modal
+    const [showModal, setShowModal] = useState(false);
+    const [modalImage, setModalImage] = useState("");
+    const [modalTitle, setModalTitle] = useState("");
+    const [modalDescription, setModalDescription] = useState("");
+    const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
+
+    // Função para abrir o modal
+    const handleImageHover = (event, article) => {
+        setModalImage(article.image || 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=300&h=300&fit=crop');
+        setModalTitle(article.name);
+        setModalDescription(article.desc);
+        setModalPosition({
+            x: event.clientX,
+            y: event.clientY
+        });
+        setShowModal(true);
+    };
+
+    // Função para fechar o modal
+    const handleImageLeave = () => {
+        setShowModal(false);
+    };
+
     // Função para obter ícone baseado na categoria
     const getCategoryIcon = (category) => {
         switch (category) {
@@ -61,13 +85,13 @@ export default function ArticlesPage() {
         const categories = [...new Set(ARTICLES.map(article => article.category))];
         return categories;
     };
-    console.log("Categorias únicas:", getUniqueCategories());
+    // console.log("Categorias únicas:", getUniqueCategories());
 
     useEffect(() => {
         async function carregarDados() {
             try {
                 setLoading(true);
-                const response = await fetch('http://192.168.1.139:8000/universal-article/');
+                const response = await fetch(import.meta.env.VITE_API_URL + '/universal-article/');
                 if (!response.ok) throw new Error('Erro ao carregar artigos');
                 const data = await response.json();
 
@@ -250,7 +274,7 @@ export default function ArticlesPage() {
                                     </div>
                                     <div className="text-light small">Categorias</div>
                                 </div>
-                               
+
                                 <div className="col-4">
                                     <div className="text-info fw-bold fs-3">100%</div>
                                     <div className="text-light small">Qualidade</div>
@@ -342,8 +366,8 @@ export default function ArticlesPage() {
                                     <button
                                         key={category}
                                         className={`btn-category btn border o d-flex align-items-center ${selectedCategory === category
-                                                ? `border-info}`
-                                                : `border-danger}`
+                                            ? `border-info}`
+                                            : `border-danger}`
                                             }`}
                                         onClick={() => handleCategoryFilter(category)}
                                     >
@@ -401,10 +425,11 @@ export default function ArticlesPage() {
                         </div>
                     ) : (
                         <div className="row g-4">
+
                             {filteredArticles.map(article => (
-                                <div key={article.id} className="col-xl-4 col-lg-6 col-md-6">
-                                    <Link
-                                        to={`/artigos/${article.id}`}
+                                <div key={article.id} className="col-xl-4 col-lg-6 col-md-6" onClick={(e) => handleImageHover(e, article)}
+                                    onMouseLeave={handleImageLeave}>
+                                    <div
                                         className="text-decoration-none"
                                     >
                                         <div className="card h-100 article-card" style={{
@@ -426,7 +451,8 @@ export default function ArticlesPage() {
                                                                     objectFit: 'cover',
                                                                     padding: '4px',
                                                                     background: 'white',
-                                                                    border: '1px solid #dee2e6'
+                                                                    border: '1px solid #dee2e6',
+                                                                    cursor: 'pointer'
                                                                 }}
                                                                 onError={(e) => {
                                                                     e.target.src = 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=150&h=150&fit=crop';
@@ -434,6 +460,7 @@ export default function ArticlesPage() {
                                                                     e.target.style.background = 'transparent';
                                                                     e.target.style.border = 'none';
                                                                 }}
+
                                                             />
                                                         </div>
                                                     </div>
@@ -449,7 +476,7 @@ export default function ArticlesPage() {
                                                             {article.desc}
                                                         </p>
                                                         <div className="d-flex align-items-center text-primary">
-                                                            <span className="small fw-semibold">Ver detalhes</span>
+                                                            <span className="small fw-semibold" >Ver detalhes</span>
                                                             <FaArrowRight size={12} className="ms-2" />
                                                         </div>
                                                     </div>
@@ -459,20 +486,63 @@ export default function ArticlesPage() {
                                             {/* Categoria e ID */}
                                             <div className="card-footer bg-transparent border-top-0 pt-0">
                                                 <div className="d-flex justify-content-between align-items-center">
-                                                    <small className="text-secondary">ID: #{article.id}</small>
                                                     <small className={`text-${getCategoryColor(article.category)}`}>
                                                         {getCategoryLabel(article.category)}
                                                     </small>
                                                 </div>
                                             </div>
                                         </div>
-                                    </Link>
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     )}
                 </div>
             </section>
+
+            {/* Modal para preview da imagem */}
+            {showModal && (
+                <div
+                    className="modal-preview"
+                    style={{
+                        position: 'fixed',
+                        top: `${modalPosition.y + 10}px`,
+                        left: `${modalPosition.x + 30}px`,
+                        zIndex: 9999,
+                        background: 'rgba(255, 255, 255, 0.16)',
+                        backdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255, 255, 255, 0)',
+                        borderRadius: '12px',
+                        padding: '16px',
+                        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
+                        maxWidth: '300px',
+                        maxHeight: '300px',
+                        animation: 'fadeIn 0.2s ease-in-out',
+                        color: '#fff'
+                    }}
+                >
+                    <div className="modal-content">
+                        <img
+                            src={modalImage}
+                            alt={modalTitle}
+                            className="img-fluid rounded mb-2"
+                            style={{
+                                width: '100%',
+                                height: '150px',
+                                objectFit: 'cover'
+                            }}
+                            onError={(e) => {
+                                e.target.src = 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=300&h=300&fit=crop';
+                            }}
+                        />
+                        <h6 className="fw-bold text-light mb-1">{modalTitle}</h6>
+                        <p className=" text-light small mb-0" style={{ fontSize: '0.8rem' }}>
+                            {modalDescription}
+                        </p>
+                    </div>
+                </div>
+            )}
+
             <Footer />
 
             <style jsx>{`
@@ -486,7 +556,6 @@ export default function ArticlesPage() {
           width: 80px;
           height: 80px;
         }
-
 
         .icon-wrapper {
           width: 100%;
@@ -516,6 +585,17 @@ export default function ArticlesPage() {
           transform: scale(1.1);
         }
 
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
         @media (max-width: 768px) {
           .article-card {
             margin-bottom: 1rem;
@@ -523,6 +603,13 @@ export default function ArticlesPage() {
           
           .display-4 {
             font-size: 2.5rem;
+          }
+
+          .modal-preview {
+            max-width: 250px !important;
+            left: 50% !important;
+            transform: translateX(-50%);
+            top: 50% !important;
           }
         }
       `}</style>

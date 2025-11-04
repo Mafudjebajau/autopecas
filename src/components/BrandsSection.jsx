@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import toyotalogo from "../assets/toyota-logo.png"; // Add missing import
+
 
 export const BrandsSection = React.memo(() => {
   const navigate = useNavigate();
@@ -14,30 +14,20 @@ export const BrandsSection = React.memo(() => {
     async function carregarDados() {
       try {
         setLoading(true);
-        const response = await fetch('http://192.168.1.139:8000/brand/');
-        
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/brand/`);
+
+
         if (!response.ok) {
           throw new Error('Erro ao carregar marcas');
         }
-        
+
         const data = await response.json();
         const formattedData = data.map(item => ({
           id: item.id,
           name: item.name,
-          logo: item.logo || toyotalogo, // Use the imported toyotalogo
+          logo: item.logo
         }));
-        // const formattedData = [
-        // {
-        //   id: 1,
-        //   name: "toyota",
-        //   logo: "/src/assets/toyota-logo-600.png"
-        // },
-        //  {
-        //   id: 2,
-        //   name: "mercedes",
-        //   logo: "/src/assets/mercedes-logo-600.png"
-        // }
-        // ]
+
         setCAR_BRANDS(formattedData);
         console.log("Marcas carregadas da API:", formattedData);
       } catch (error) {
@@ -300,8 +290,8 @@ export const BrandsSection = React.memo(() => {
                       ? '1px solid rgba(10, 81, 95, 0.94)'
                       : '1px solid rgba(255, 255, 255, 0.04)',
                     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                    width: '180px',
-                    height: '180px',
+                    width: '200px',
+                    height: '200px',
                     flex: '0 0 auto',
                     display: 'flex',
                     flexDirection: 'column',
@@ -318,10 +308,10 @@ export const BrandsSection = React.memo(() => {
                 >
                   {/* Container do Logo */}
                   <div
-                    className="logo-modern-container mb-3"
+                    className="logo-modern-container "
                     style={{
-                      width: '70px',
-                      height: '70px',
+                      width: '150px',
+                      height: '150px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center'
@@ -340,7 +330,7 @@ export const BrandsSection = React.memo(() => {
                   </div>
 
                   {/* Nome da Marca */}
-                  <span className="text-white fw-semibold small mt-2">
+                  <span className="text-white fw-semibold small">
                     {brand.name}
                   </span>
 
@@ -391,7 +381,8 @@ export const BrandsSection = React.memo(() => {
 
       <style jsx>{`
       .transformed{
-        transform: translateY(-100%) !important;
+        transform: translateY(-150%) !important;
+
         }
         .icon-header {
           width: 80px;
